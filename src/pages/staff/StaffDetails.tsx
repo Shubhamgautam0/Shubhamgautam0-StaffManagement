@@ -5,7 +5,6 @@ import {
   Avatar,
   IconButton,
   Chip,
-  TextField,
 } from '@mui/material';
 import {
   Phone,
@@ -13,7 +12,7 @@ import {
   LocationOn,
   MoreVert,
 } from '@mui/icons-material';
-import type { StaffMember } from '../data/staffData';
+import type { StaffMember } from '../../data/staffData';
 
 interface StaffDetailsProps {
   staff: StaffMember | null;

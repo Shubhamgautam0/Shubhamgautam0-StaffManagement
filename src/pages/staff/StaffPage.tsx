@@ -4,7 +4,7 @@ import { Box, Paper, Grid, Fab } from '@mui/material';
 import StaffList from './StaffList';
 import StaffDetails from './StaffDetails';
 import StaffRecords from './StaffRecords';
-import type { StaffMember } from '../data/staffData';
+import type { StaffMember } from '../../data/staffData';
 import { Add } from '@mui/icons-material';
 
 const StaffPage: React.FC = () => {

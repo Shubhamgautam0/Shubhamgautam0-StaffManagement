@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 import { Box } from '@mui/material';
 import Header from './components/header/Header';
 import Sidebar from './layout/sidebar/sidebar';
-import StaffPage from './pages/StaffPage';
+import StaffPage from './pages/staff/StaffPage';
 import { Typography } from '@mui/material';
 
 // Placeholder components for other routes

@@ -19,8 +19,6 @@ import {
   ExpandLess,
   ExpandMore,
   Person,
-  ContactPhone,
-  Assignment,
 } from '@mui/icons-material';
 import './sidebar.css';
 

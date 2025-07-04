@@ -11,20 +11,16 @@ import {
   ListItemAvatar,
   ListItemText,
   Avatar,
-  Chip,
   IconButton,
   InputAdornment,
-  Badge,
-  Fab,
 } from '@mui/material';
 import {
   Search,
   MoreVert,
   Phone,
-  Add,
 } from '@mui/icons-material';
-import { staffData, getStaffByStatus } from '../data/staffData';
-import type { StaffMember } from '../data/staffData';
+import { staffData, getStaffByStatus } from '../../data/staffData';
+import type { StaffMember } from '../../data/staffData';
 
 
 interface StaffListProps {

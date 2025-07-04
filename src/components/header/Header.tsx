@@ -23,7 +23,6 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<number>(3);
 
-  // Define tab routes mapping
   const tabRoutes = [
     '/watch',
     '/schedule',
@@ -31,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     '/staff'
   ];
 
-  // Update active tab based on current route
+  // Update active
   useEffect(() => {
     const currentPath = location.pathname;
     const tabIndex = tabRoutes.findIndex(route => currentPath.startsWith(route));

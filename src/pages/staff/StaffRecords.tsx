@@ -14,7 +14,7 @@ import {
   Security,
   Settings,
 } from '@mui/icons-material';
-import type { StaffMember } from '../data/staffData';
+import type { StaffMember } from '../../data/staffData';
 
 interface StaffRecordsProps {
   staff: StaffMember | null;
