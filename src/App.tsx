@@ -6,7 +6,7 @@ import Sidebar from './layout/sidebar/sidebar';
 import StaffPage from './pages/staff/StaffPage';
 import { Typography } from '@mui/material';
 
-// Placeholder components for other routes
+
 const WatchPage = () => (
   <Box sx={{
     height: '100vh',

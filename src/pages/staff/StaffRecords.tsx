@@ -5,6 +5,8 @@ import {
   Tab,
   Typography,
   Paper,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import {
   Assignment,
@@ -15,6 +17,11 @@ import {
   Settings,
 } from '@mui/icons-material';
 import type { StaffMember } from '../../data/staffData';
+import Calendar from './Calender';
+import Availability from './Availability';
+import Licence_Certification from './Licence_Certification';
+import Timesheet from './Timesheet';
+import StaffInformation from './StaffInformation';
 
 interface StaffRecordsProps {
   staff: StaffMember | null;
@@ -22,6 +29,8 @@ interface StaffRecordsProps {
 
 const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
   const [activeTab, setActiveTab] = useState(0);
+  const [recordType, setRecordType] = useState<'Records' | 'Notes'>('Records'); 
+
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
@@ -34,7 +43,9 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
     { id: 3, label: 'Availability', icon: Visibility },
     { id: 4, label: 'Licence & Certification', icon: Security },
     { id: 5, label: 'Duty Settings', icon: Settings },
-    { id: 6, label: 'More' },
+    { id: 6, label: 'Staff Information' },
+    { id: 7, label: 'More' },
+    
   ];
 
   if (!staff) {
@@ -65,110 +76,100 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
     switch (activeTab) {
       case 0: // Records
         return (
-          <Box
-            sx={{
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#666',
-            }}
-          >
-            <Assignment sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-              No Data Found
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              No records available for this staff member
-            </Typography>
+          <Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', m: '30px 30px 0 30px' }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                Record
+              </Typography>
+              <Select
+                value={recordType}
+                onChange={(e) => setRecordType(e.target.value as 'Records' | 'Notes')}
+                sx={{
+                  minWidth: 120,
+                  border: 'none',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  }
+                }}
+              >
+                <MenuItem value="Records">Records</MenuItem>
+                <MenuItem value="Notes">Notes</MenuItem>
+              </Select>
+            </Box>
+            <Box
+              sx={{
+                height: '300px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#666',
+              }}
+            >
+              <Assignment sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                No Data Found
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                No records available for this staff member
+              </Typography>
+            </Box>
           </Box>
         );
       case 1: // Schedule
         return (
-          <Box
-            sx={{
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#666',
-            }}
-          >
-            <Schedule sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-              Schedule
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Schedule information will be displayed here
-            </Typography>
+          <Box sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'auto'
+          }}>
+            <Box>
+              <Typography variant='body1' sx={{ fontWeight: 600, m: 2 }}>
+                Schedule
+                </Typography>
+            </Box>
+            <Calendar />
           </Box>
         );
       case 2: // Timesheet
         return (
-          <Box
-            sx={{
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#666',
-            }}
-          >
-            <AccessTime sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-              Timesheet
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Timesheet data will be displayed here
-            </Typography>
+          <Box>
+            <Timesheet />
           </Box>
         );
       case 3: // Availability
         return (
-          <Box
-            sx={{
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#666',
-            }}
-          >
-            <Visibility sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-              Availability
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Staff availability information will be displayed here
-            </Typography>
+          <Box sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'auto'
+          }}>
+            <Availability />
           </Box>
         );
-      case 4: 
+      case 4:
         return (
-          <Box
-            sx={{
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#666',
-            }}
-          >
-            <Security sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-              Licence & Certification
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Licence and certification details will be displayed here
-            </Typography>
+          <Box sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'auto'
+          }}>
+            <Licence_Certification />
           </Box>
         );
-      case 5: 
+      case 5:
         return (
           <Box
             sx={{
@@ -189,9 +190,21 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
             </Typography>
           </Box>
         );
-      case 6: 
+      case 6:
+         return (
+          <Box sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'auto'
+          }}>
+            <StaffInformation />
+          </Box>
+        );
+      case 7:
         return (
-          <Box
+        <Box
             sx={{
               height: '300px',
               display: 'flex',
@@ -215,38 +228,26 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
   };
 
   return (
-    <Paper sx={{ bgcolor: 'white', height: '100%' }}>
-      {/* Tabs */}
-      <Box sx={{ borderBottom: '1px solid #e0e0e0', overflow: 'auto' }}>
+    <Paper sx={{
+      bgcolor: 'white',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      
+    }}>
+      <Box sx={{ borderBottom: '1px solid #e0e0e0', flexShrink: 0, overflow: 'auto' }}>
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
           variant="scrollable"
           scrollButtons="auto"
-          sx={{
-            px: 2,
-            '& .MuiTab-root': {
-              textTransform: 'none',
-              fontWeight: 500,
-              fontSize: '14px',
-              color: '#666',
-              minWidth: 'auto',
-              padding: '12px 16px',
-              '&.Mui-selected': {
-                color: '#1976d2',
-                fontWeight: 600,
-              },
-            },
-            '& .MuiTabs-indicator': {
-              backgroundColor: '#1976d2',
-            },
-          }}
+          className="staff-tabs"
         >
           {tabs.map((tab) => (
             <Tab
               key={tab.id}
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   {tab.icon && <tab.icon sx={{ fontSize: 18 }} />}
                   {tab.label}
                 </Box>
@@ -256,8 +257,12 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
         </Tabs>
       </Box>
 
-      {/* Tab Content */}
-      <Box sx={{ p: 3 }}>
+      <Box sx={{
+        flex: 1,
+        overflow: 'auto',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
         {renderTabContent()}
       </Box>
     </Paper>

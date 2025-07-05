@@ -19,15 +19,16 @@ import {
   MoreVert,
   Phone,
 } from '@mui/icons-material';
-import { staffData, getStaffByStatus } from '../../data/staffData';
+import { staffData } from '../../data/staffData';
 import type { StaffMember } from '../../data/staffData';
 
 
 interface StaffListProps {
   onStaffSelect: (staff: StaffMember) => void;
+  newStaffList?: StaffMember[];
 }
 
-const StaffList: React.FC<StaffListProps> = ({ onStaffSelect }) => {
+const StaffList: React.FC<StaffListProps> = ({ onStaffSelect, newStaffList = [] }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState(0);
 
@@ -36,30 +37,31 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect }) => {
   };
 
   const getFilteredStaff = () => {
-    let filtered = staffData;
-    
-    // Filter by tab
+    // Combine original staff data with new staff
+    const allStaff = [...staffData, ...newStaffList];
+    let filtered = allStaff;
+
     if (activeTab === 1) {
-      filtered = getStaffByStatus('Active');
+      filtered = allStaff.filter(staff => staff.status === 'Active');
     } else if (activeTab === 2) {
-      filtered = getStaffByStatus('Old Version');
+      filtered = allStaff.filter(staff => staff.status === 'Old Version');
     }
-    
-    // Filter by search term
+
     if (searchTerm) {
       filtered = filtered.filter(staff =>
         staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         staff.phone.includes(searchTerm)
       );
     }
-    
+
     return filtered;
   };
 
   const getTabCounts = () => {
-    const all = staffData.length;
-    const active = getStaffByStatus('Active').length;
-    const expiring = getStaffByStatus('Old Version').length;
+    const allStaff = [...staffData, ...newStaffList];
+    const all = allStaff.length;
+    const active = allStaff.filter(staff => staff.status === 'Active').length;
+    const expiring = allStaff.filter(staff => staff.status === 'Old Version').length;
     return { all, active, expiring };
   };
 
@@ -67,11 +69,10 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect }) => {
   const filteredStaff = getFilteredStaff();
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: 'white' }}>
-      {/* Header */}
+    <Box className="staff-list-container">
       <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, flex: 1 }}>
+        <Box sx={{ display: 'flex',justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h5" className="staff-list-title">
             Staff
           </Typography>
             <Box />
@@ -80,7 +81,6 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect }) => {
           </IconButton>
         </Box>
 
-        {/* Search */}
         <TextField
           fullWidth
           placeholder="Search Staff by Name, Phone Number..."
@@ -101,27 +101,11 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect }) => {
           }}
         />
 
-        {/* Tabs */}
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
-          sx={{
-            '& .MuiTab-root': {
-              textTransform: 'none',
-              fontWeight: 500,
-              fontSize: '14px',
-              color: '#666',
-              minWidth: 'auto',
-              padding: '8px 16px',
-              '&.Mui-selected': {
-                color: '#1976d2',
-                fontWeight: 600,
-              },
-            },
-            '& .MuiTabs-indicator': {
-              backgroundColor: '#1976d2',
-            },
-          }}
+          className='staff-tabs'
+          variant='scrollable'
         >
           <Tab label={`All Staff (${all})`} />
           <Tab label={`Active Staff (${active})`} />
@@ -183,7 +167,6 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect }) => {
         </List>
       </Box>
 
-      {/* Add Button */}
     </Box>
   );
 };

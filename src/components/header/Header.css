@@ -10,9 +10,14 @@
   width: 100vw; 
   height: 64px;
   box-sizing: border-box;
-  /* margin: 0; */
   position: fixed; 
   top: 0;
   left: 0;
-  z-index: 1400; 
+  z-index: 1100; 
+}
+
+@media screen and (max-width: 768px) {
+  .header-tabs-container{
+    display: none
+  }
 }

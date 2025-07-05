@@ -1,4 +1,3 @@
-// Staff data for the application
 export interface StaffMember {
   id: string;
   name: string;
@@ -88,20 +87,8 @@ export const staffData: StaffMember[] = [
     status: 'Active',
   }
 ];
-
-// Function to get staff member by ID
-export const getStaffById = (id: string): StaffMember | undefined => {
-  return staffData.find(staff => staff.id === id);
-};
-
 // Function to get staff by status
 export const getStaffByStatus = (status: StaffMember['status']): StaffMember[] => {
   return staffData.filter(staff => staff.status === status);
 };
 
-// Function to search staff by name
-export const searchStaffByName = (searchTerm: string): StaffMember[] => {
-  return staffData.filter(staff =>
-    staff.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-};

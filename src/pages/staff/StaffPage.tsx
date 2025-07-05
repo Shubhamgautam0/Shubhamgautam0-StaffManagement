@@ -1,123 +1,137 @@
 import React, { useState } from 'react';
-import { Box, Paper, Grid, Fab } from '@mui/material';
+import { Box, Paper, Grid, Fab, Tooltip, Zoom } from '@mui/material';
 
 import StaffList from './StaffList';
 import StaffDetails from './StaffDetails';
 import StaffRecords from './StaffRecords';
+import AddStaffForm from './AddStaffForm';
 import type { StaffMember } from '../../data/staffData';
-import { Add } from '@mui/icons-material';
+import { Add, Person, Schedule } from '@mui/icons-material';
 
 const StaffPage: React.FC = () => {
   const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
+  const [fabHovered, setFabHovered] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [staffList, setStaffList] = useState<StaffMember[]>([]);
 
   const handleStaffSelect = (staff: StaffMember) => {
     setSelectedStaff(staff);
   };
 
+  const handleAddNewPerson = () => {
+    setShowAddForm(true);
+    setSelectedStaff(null); 
+  };
+
+  const handleCloseForm = () => {
+    setShowAddForm(false);
+  };
+
+  const handleSubmitStaff = (newStaff: StaffMember) => {
+    setStaffList(prev => [...prev, newStaff]);
+    setShowAddForm(false);
+    // Optionally select the newly added staff
+    setSelectedStaff(newStaff);
+  };
+
+  const handleTimesheet = () => {
+    console.log('Timesheet clicked');
+    // Add your logic here
+  };
+
   return (
-    <Box sx={{
-      height: 'calc(100vh - 64px)', 
-      width: '100vw',
-      bgcolor: '#f5f5f5',
-      p: 2,
-      overflow: 'hidden',
-      boxSizing: 'border-box',
-      marginTop: '64px', 
-    }}>
-      <Grid container spacing={2} sx={{
-        height: 'calc(100vh - 64px - 32px)', 
-        width: 'calc(100vw - 32px)',
-        maxHeight: 'calc(100vh - 64px - 32px)',
-        maxWidth: 'calc(100vw - 32px)',
-        margin: 0,
-        overflow: 'hidden'
-      }}>
+    <Box className="page-container">
+      <Grid container spacing={2} className="grid-container">
         {/* Staff List */}
-        <Grid size={{ xs: 12, md: 4 }} sx={{
-          height: '100%',
-          minHeight: 0,
-          overflow: 'hidden'
-        }}>
-          <Paper sx={{
-            height: '100%',
-            width: '100%',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            boxSizing: 'border-box'
-          }}>
-            <StaffList onStaffSelect={handleStaffSelect} />
+        <Grid size={{ xs: 12, md: showAddForm ? 6 : 4 }} className="grid-item">
+          <Paper className="paper-container">
+            <StaffList onStaffSelect={handleStaffSelect} newStaffList={staffList} />
           </Paper>
         </Grid>
 
-        {/* Staff Details and Records */}
-        <Grid size={{ xs: 12, md: 8 }} sx={{
-          height: '100%',
-          minHeight: 0,
-          overflow: 'hidden'
-        }}>
-          <Grid container spacing={2} sx={{
-            height: '100%',
-            width: '100%',
-            flexDirection: 'column',
-            flexWrap: 'nowrap',
-            margin: 0,
-            overflow: 'hidden'
-          }}>
-            {/* Staff Details */}
-            <Grid size={12} sx={{
-              height: '50%',
-              minHeight: 0,
-              flex: '1 1 50%',
+        {/* Staff Details and Records OR Add Staff Form */}
+        <Grid size={{ xs: 12, md: showAddForm ? 6 : 8 }} className="grid-item">
+          {showAddForm ? (
+            <AddStaffForm
+              onClose={handleCloseForm}
+              onSubmit={handleSubmitStaff}
+            />
+          ) : (
+            <Grid container spacing={2} sx={{
+              height: '100%',
+              width: '100%',
+              flexDirection: 'column',
+              flexWrap: 'nowrap',
+              margin: 0,
               overflow: 'hidden'
             }}>
-              <Paper sx={{
-                height: '100%',
-                width: '100%',
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                boxSizing: 'border-box'
+              {/* Staff Details */}
+              <Grid size={12} sx={{
+                height: '50%',
+                minHeight: 0,
+                flex: '1 1 50%',
+                overflow: 'hidden'
               }}>
-                <StaffDetails staff={selectedStaff} />
-              </Paper>
-            </Grid>
+                <Paper className="paper-container">
+                  <StaffDetails staff={selectedStaff} />
+                </Paper>
+              </Grid>
 
-            {/* Staff Records */}
-            <Grid size={12} sx={{
-              height: '50%',
-              minHeight: 0,
-              flex: '1 1 50%',
-              overflow: 'hidden'
-            }}>
-              <Paper sx={{
-                height: '100%',
-                width: '100%',
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                boxSizing: 'border-box'
+              {/* Staff Records */}
+              <Grid size={12} sx={{
+                height: '50%',
+                minHeight: 0,
+                flex: '1 1 50%',
+                overflow: 'hidden'
               }}>
-                <StaffRecords staff={selectedStaff} />
-              </Paper>
+                <Paper className="paper-container">
+                  <StaffRecords staff={selectedStaff} />
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </Grid>
       </Grid>
-        <Fab
-        color="primary"
-        sx={{
-          position: 'fixed',
-          bottom: 24,
-          right: 24,
-          bgcolor: '#6366f1',
-          '&:hover': {
-            bgcolor: '#5b5bd6',
-          },
-        }}
+
+      <Box
+        className="fab-container"
+        onMouseEnter={() => setFabHovered(true)}
+        onMouseLeave={() => setFabHovered(false)}
       >
-        <Add />
-      </Fab>
+        {/* Add New Person */}
+        <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '100ms' : '0ms' }}>
+          <Tooltip title="Add New Person" placement="left">
+            <Fab
+              size="large"
+              onClick={handleAddNewPerson}
+              className="fab-primary"
+            >
+              <Person />
+            </Fab>
+          </Tooltip>
+        </Zoom>
+
+        {/* Timesheet */}
+        <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '50ms' : '0ms' }}>
+          <Tooltip title="Timesheet" placement="left">
+            <Fab
+              size="large"
+              onClick={handleTimesheet}
+              className="fab-primary"
+            >
+              <Schedule />
+            </Fab>
+          </Tooltip>
+        </Zoom>
+
+        {/* Main FAB */}
+        <Fab
+          color="primary"
+          className={`fab-primary ${fabHovered ? 'fab-rotate' : 'fab-rotate-reset'}`}
+        >
+          <Add />
+        </Fab>
+      </Box>
     </Box>
   );
 };
