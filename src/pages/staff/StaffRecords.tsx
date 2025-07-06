@@ -84,19 +84,7 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
               <Select
                 value={recordType}
                 onChange={(e) => setRecordType(e.target.value as 'Records' | 'Notes')}
-                sx={{
-                  minWidth: 120,
-                  border: 'none',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: 'none'
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    border: 'none'
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    border: 'none'
-                  }
-                }}
+                className='item-selector'
               >
                 <MenuItem value="Records">Records</MenuItem>
                 <MenuItem value="Notes">Notes</MenuItem>

@@ -75,7 +75,7 @@ function Availability() {
     if (availabilityType === 'fullTime') {
       return (
         <Box sx={{ mt: 3 }}>
-          <Typography variant="h6" sx={{ color: '#7c4dff', mb: 2, fontWeight: 500 }}>
+          <Typography variant="h6" sx={{  mb: 2, fontWeight: 500 }}>
             Vacation Time
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 2 }}>
@@ -88,11 +88,7 @@ function Availability() {
                 type="date"
                 value={newVacation.from}
                 onChange={(e) => setNewVacation({ ...newVacation, from: e.target.value })}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '4px',
-                  },
-                }}
+                className="input-field"
               />
             </Box>
             <Box sx={{ flex: 1 }}>
@@ -104,11 +100,7 @@ function Availability() {
                 type="date"
                 value={newVacation.to}
                 onChange={(e) => setNewVacation({ ...newVacation, to: e.target.value })}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '4px',
-                  },
-                }}
+                className="input-field"
               />
             </Box>
             <Button
@@ -176,7 +168,7 @@ function Availability() {
                     }
                   }}
                   disabled={!isSelected}
-                  className="availability-time-field input-field"
+                  className="input-field"
                 />
               </Box>
             );

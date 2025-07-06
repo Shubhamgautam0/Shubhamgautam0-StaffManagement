@@ -88,16 +88,10 @@ function Licence_Certification() {
       </Typography>
 
       <Button
-        variant="outlined"
+        variant="text"
         startIcon={<Add />}
         onClick={handleAddLicence}
         className="btn-text"
-        sx={{
-          borderColor: '#7c4dff',
-          '&:hover': {
-            borderColor: '#6a3de8',
-          },
-        }}
       >
         Add Licences
       </Button>
@@ -108,12 +102,7 @@ function Licence_Certification() {
           {licences.map((licence) => (
             <Paper
               key={licence.id}
-              sx={{
-                p: 2,
-                mb: 2,
-                border: '1px solid #e0e0e0',
-                borderRadius: 1,
-              }}
+              sx={{display: 'flex', justifyContent:'space-around'}}
             >
               <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
                 {licence.type}
@@ -146,12 +135,11 @@ function Licence_Certification() {
                   <Typography variant="body2" className="form-field-label">
                     Licence Type *
                   </Typography>
-                  <FormControl fullWidth>
+                  <FormControl fullWidth className="input-field">
                     <Select
                       value={formData.type}
                       onChange={(e) => handleInputChange('type', e.target.value)}
                       displayEmpty
-                      className="input-field"
                     >
                       <MenuItem value="" disabled>
                         <Typography color="text.secondary">Licence Type</Typography>
@@ -166,7 +154,7 @@ function Licence_Certification() {
                 </Box>
 
                 <Box sx={{ flex: 1 }}>
-                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                  <Typography variant="body2" className='form-field-label' >
                     Licence Number *
                   </Typography>
                   <TextField
@@ -174,17 +162,13 @@ function Licence_Certification() {
                     placeholder="Licence Number"
                     value={formData.number}
                     onChange={(e) => handleInputChange('number', e.target.value)}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 1,
-                      },
-                    }}
+                    className='input-field'
                   />
                 </Box>
               </Box>
 
               <Box sx={{ width: '50%' }}>
-                <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                <Typography variant="body2" className='form-field-label' >
                   Licence Expiry Date *
                 </Typography>
                 <TextField
@@ -192,11 +176,7 @@ function Licence_Certification() {
                   type="date"
                   value={formData.expiryDate}
                   onChange={(e) => handleInputChange('expiryDate', e.target.value)}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 1,
-                    },
-                  }}
+                  className='input-field'
                 />
               </Box>
 

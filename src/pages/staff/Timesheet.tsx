@@ -15,19 +15,7 @@ const Timesheet = () => {
                 <Select
                     value={timeperiod}
                     onChange={(e) => setTimeperiod(e.target.value as 'Last week' | 'Last two week' | 'Last month')}
-                    sx={{
-                        minWidth: 120,
-                        border: 'none',
-                        '& .MuiOutlinedInput-notchedOutline': {
-                            border: 'none'
-                        },
-                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                            border: 'none'
-                        },
-                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            border: 'none'
-                        }
-                    }}
+                    className='item-selector'
                 >
                     <MenuItem value="Last week">Last week</MenuItem>
                     <MenuItem value="Last two week">Last two week</MenuItem>
@@ -36,16 +24,16 @@ const Timesheet = () => {
             </Box>
             <Box sx={{ width: '100%', height: '100%', p: 3, bgcolor: 'white', display: 'flex', flexDirection: 'row', gap: 4, overflow: 'auto' }}>
                 <Box>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    <Typography variant="subtitle2" className='form-field-label' >
                         Start Date
                     </Typography>
-                    <TextField type="date" size="small" />
+                    <TextField type="date" size="small" className="input-field" />
                 </Box>
                 <Box>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    <Typography variant="subtitle2" className='form-field-label' >
                         End Date
                     </Typography>
-                    <TextField type="date" size="small" />
+                    <TextField type="date" size="small" className="input-field" />
                 </Box>
                 <Button variant="contained"
                     className='btn-primary'

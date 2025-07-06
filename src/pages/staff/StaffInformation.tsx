@@ -113,20 +113,7 @@ function StaffInformation() {
               fullWidth
               value={staffInfo.emergencyContactName}
               onChange={(e) => handleStaffInfoChange('emergencyContactName', e.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 1,
-                  '& fieldset': {
-                    borderColor: '#e0e0e0',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#ccc',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#7c4dff',
-                  },
-                },
-              }}
+              className='input-field'
             />
           </Box>
 
@@ -138,20 +125,7 @@ function StaffInformation() {
               fullWidth
               value={staffInfo.emergencyContactPhone}
               onChange={(e) => handleStaffInfoChange('emergencyContactPhone', e.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 1,
-                  '& fieldset': {
-                    borderColor: '#e0e0e0',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#ccc',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#7c4dff',
-                  },
-                },
-              }}
+              className='input-field'
             />
           </Box>
         </Box>
@@ -165,20 +139,7 @@ function StaffInformation() {
               fullWidth
               value={staffInfo.landlinePhone}
               onChange={(e) => handleStaffInfoChange('landlinePhone', e.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 1,
-                  '& fieldset': {
-                    borderColor: '#e0e0e0',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#ccc',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#7c4dff',
-                  },
-                },
-              }}
+              className='input-field'
             />
           </Box>
 
@@ -190,20 +151,7 @@ function StaffInformation() {
               fullWidth
               value={staffInfo.staffCode}
               onChange={(e) => handleStaffInfoChange('staffCode', e.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 1,
-                  '& fieldset': {
-                    borderColor: '#e0e0e0',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#ccc',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#7c4dff',
-                  },
-                },
-              }}
+              className='input-field'
             />
           </Box>
         </Box>
@@ -236,20 +184,7 @@ function StaffInformation() {
                   placeholder="Field Label"
                   value={field.label}
                   onChange={(e) => handleCustomFieldChange(field.id, 'label', e.target.value)}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 1,
-                      '& fieldset': {
-                        borderColor: '#e0e0e0',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: '#ccc',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: '#7c4dff',
-                      },
-                    },
-                  }}
+                  className='input-field'
                 />
               </Box>
               
@@ -257,6 +192,7 @@ function StaffInformation() {
                 <IconButton
                   onClick={() => removeCustomField(field.id)}
                   sx={{
+                    mb: 1,
                     color: '#f44336',
                   }}
                 >

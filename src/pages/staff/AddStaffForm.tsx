@@ -142,6 +142,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ onClose, onSubmit }) => {
             placeholder="Phone Number"
             value={personalInfo.phoneNumber}
             onChange={(e) => handlePersonalInfoChange('phoneNumber', e.target.value)}
+            className='input-field'
           />
         </Box>
         <Box sx={{ flex: 1 }}>
@@ -169,6 +170,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ onClose, onSubmit }) => {
           fullWidth
           value={personalInfo.licenceExpireDate}
           onChange={(e) => handlePersonalInfoChange('licenceExpireDate', e.target.value)}
+          className='input-field'
         />
       </Box>
 
@@ -181,6 +183,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ onClose, onSubmit }) => {
           placeholder="Employee Id"
           value={personalInfo.employeeId}
           onChange={(e) => handlePersonalInfoChange('employeeId', e.target.value)}
+          className='input-field'
         />
       </Box>
 
@@ -194,6 +197,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ onClose, onSubmit }) => {
             placeholder="Username"
             value={personalInfo.username}
             onChange={(e) => handlePersonalInfoChange('username', e.target.value)}
+            className='input-field'
           />
         </Box>
         <Box sx={{ flex: 1 }}>
@@ -206,6 +210,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ onClose, onSubmit }) => {
             placeholder="Password"
             value={personalInfo.password}
             onChange={(e) => handlePersonalInfoChange('password', e.target.value)}
+            className='input-field'
           />
         </Box>
       </Box>

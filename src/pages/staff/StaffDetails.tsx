@@ -56,49 +56,49 @@ const StaffDetails: React.FC<StaffDetailsProps> = ({ staff }) => {
     );
   }
 
-  const getStatusChip = (status: StaffMember['status']) => {
-    switch (status) {
-      case 'Old Version':
-        return (
-          <Chip
-            label="Old Version"
-            size="small"
-            sx={{
-              backgroundColor: '#fff3cd',
-              color: '#856404',
-              fontSize: '11px',
-              height: '20px',
-            }}
-          />
-        );
-      case 'Disabled':
-        return (
-          <Chip
-            label="Disabled"
-            size="small"
-            sx={{
-              backgroundColor: '#f8d7da',
-              color: '#721c24',
-              fontSize: '11px',
-              height: '20px',
-            }}
-          />
-        );
-      default:
-        return (
-          <Chip
-            label="Active"
-            size="small"
-            sx={{
-              backgroundColor: '#d4edda',
-              color: '#155724',
-              fontSize: '11px',
-              height: '20px',
-            }}
-          />
-        );
-    }
-  };
+  // const getStatusChip = (status: StaffMember['status']) => {
+  //   switch (status) {
+  //     case 'Old Version':
+  //       return (
+  //         <Chip
+  //           label="Old Version"
+  //           size="small"
+  //           sx={{
+  //             backgroundColor: '#fff3cd',
+  //             color: '#856404',
+  //             fontSize: '11px',
+  //             height: '20px',
+  //           }}
+  //         />
+  //       );
+  //     case 'Disabled':
+  //       return (
+  //         <Chip
+  //           label="Disabled"
+  //           size="small"
+  //           sx={{
+  //             backgroundColor: '#f8d7da',
+  //             color: '#721c24',
+  //             fontSize: '11px',
+  //             height: '20px',
+  //           }}
+  //         />
+  //       );
+  //     default:
+  //       return (
+  //         <Chip
+  //           label="Active"
+  //           size="small"
+  //           sx={{
+  //             backgroundColor: '#d4edda',
+  //             color: '#155724',
+  //             fontSize: '11px',
+  //             height: '20px',
+  //           }}
+  //         />
+  //       );
+  //   }
+  // };
 
   return (
     <Box sx={{ height: '100%', bgcolor: 'white', overflow: 'auto' }}>
@@ -123,7 +123,7 @@ const StaffDetails: React.FC<StaffDetailsProps> = ({ staff }) => {
               <Typography variant="h4" sx={{ fontWeight: 600 }}>
                 {staff.name}
               </Typography>
-              {getStatusChip(staff.status)}
+              {/* {getStatusChip(staff.status)} */}
             </Box>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
               {staff.name.toLowerCase()} | FEMALE
