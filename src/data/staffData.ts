@@ -8,6 +8,11 @@ export interface StaffMember {
   status: 'Active' | 'Disabled' | 'Old Version';
   version?: string;
   avatar?: string;
+  gender: string;
+  employeeId?: string;
+  username?: string;
+  unitNumber?: string;
+  licenceExpireDate?: string;
 }
 
 export const staffData: StaffMember[] = [
@@ -19,6 +24,7 @@ export const staffData: StaffMember[] = [
     email: 'valerieavette@email.com',
     address: 'Address not available',
     status: 'Active',
+    gender: 'Male'
   },
   {
     id: '2',
@@ -29,6 +35,7 @@ export const staffData: StaffMember[] = [
     address: '123 Main St, Los Angeles, CA',
     status: 'Old Version',
     version: 'Old Version',
+    gender: 'Female'
   },
   {
     id: '3',
@@ -38,6 +45,7 @@ export const staffData: StaffMember[] = [
     email: 'remon.g8@email.com',
     address: '456 Oak Ave, Burbank, CA',
     status: 'Active',
+    gender: 'Female'
   },
   {
     id: '4',
@@ -47,6 +55,7 @@ export const staffData: StaffMember[] = [
     email: 'richard.ibarrazaar@email.com',
     address: '789 Pine St, Glendale, CA',
     status: 'Disabled',
+    gender: 'Male'
    
   },
   {
@@ -57,6 +66,7 @@ export const staffData: StaffMember[] = [
     email: 'richardo.yumul@email.com',
     address: '321 Elm Dr, Orange, CA',
     status: 'Disabled',
+    gender: 'Male'
   },
   {
     id: '6',
@@ -66,6 +76,7 @@ export const staffData: StaffMember[] = [
     email: 'romeo.lacuesta@email.com',
     address: '654 Maple Ln, Van Nuys, CA',
     status: 'Active',
+    gender: 'Male'
   },
   {
     id: '7',
@@ -76,6 +87,7 @@ export const staffData: StaffMember[] = [
     address: '987 Cedar Blvd, Los Angeles, CA',
     status: 'Old Version',
     version: 'Old Version',
+    gender: 'Male'
   },
   {
     id: '8',
@@ -85,6 +97,7 @@ export const staffData: StaffMember[] = [
     email: 'sally.sms@email.com',
     address: '147 Birch St, Pasadena, CA',
     status: 'Active',
+    gender: 'Male'
   }
 ];
 // Function to get staff by status

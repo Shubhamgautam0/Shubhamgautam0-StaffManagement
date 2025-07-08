@@ -60,14 +60,14 @@ const Calendar: React.FC = () => {
             width: '100%',
             height: 50,
             borderRadius: '50%',
-            bgcolor: isSelected ? '#9D00FF' : 'transparent',
+            bgcolor: isSelected ? '#7c4dff' : 'transparent',
             color: isSelected ? 'white' : '#666',
             fontWeight: isSelected ? 600 : 400,
             fontSize: '16px',
             maxWidth: 50,
             mx: 'auto',
             '&:hover': {
-              bgcolor: isSelected ? '#9D00FF' : '#f5f5f5',
+              bgcolor: isSelected ? '#7c4dff' : '#f5f5f5',
             },
           }}
         >

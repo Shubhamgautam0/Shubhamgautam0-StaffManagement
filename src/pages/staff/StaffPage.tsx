@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Paper, Grid, Fab, Tooltip, Zoom } from '@mui/material';
+import { Box, Paper, Grid, Fab, Tooltip, Zoom, Container } from '@mui/material';
 
 import StaffList from './StaffList';
 import StaffDetails from './StaffDetails';
@@ -12,6 +12,8 @@ const StaffPage: React.FC = () => {
   const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
   const [fabHovered, setFabHovered] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
   const [staffList, setStaffList] = useState<StaffMember[]>([]);
 
   const handleStaffSelect = (staff: StaffMember) => {
@@ -20,18 +22,43 @@ const StaffPage: React.FC = () => {
 
   const handleAddNewPerson = () => {
     setShowAddForm(true);
-    setSelectedStaff(null); 
+    setShowEditForm(false);
+    setSelectedStaff(null);
+  };
+
+  const handleEditPerson = (staff: StaffMember) => {
+    setEditingStaff(staff);
+    setShowEditForm(true);
+    setShowAddForm(false);
+    setSelectedStaff(null);
   };
 
   const handleCloseForm = () => {
     setShowAddForm(false);
+    setShowEditForm(false);
+    setEditingStaff(null);
   };
 
-  const handleSubmitStaff = (newStaff: StaffMember) => {
-    setStaffList(prev => [...prev, newStaff]);
-    setShowAddForm(false);
-    // Optionally select the newly added staff
-    setSelectedStaff(newStaff);
+  const handleSubmitStaff = (staffData: StaffMember) => {
+    if (showEditForm && editingStaff) {
+      // Edit mode
+      console.log('Updating staff:', staffData);
+      const updatedStaff = { ...staffData, id: editingStaff.id };
+      setStaffList(prev =>
+        prev.map(staff =>
+          staff.id === editingStaff.id ? updatedStaff : staff
+        )
+      );
+      setSelectedStaff(updatedStaff);
+      setShowEditForm(false);
+      setEditingStaff(null);
+    } else {
+      // Add mode
+      console.log('Adding new staff:', staffData);
+      setStaffList(prev => [...prev, staffData]);
+      setSelectedStaff(staffData);
+      setShowAddForm(false);
+    }
   };
 
   const handleTimesheet = () => {
@@ -43,16 +70,36 @@ const StaffPage: React.FC = () => {
     <Box className="page-container">
       <Grid container spacing={2} className="grid-container">
         {/* Staff List */}
-        <Grid size={{ xs: 12, md: showAddForm ? 6 : 4 }} className="grid-item">
+        <Grid size={{ xs: 12, md: (showAddForm || showEditForm) ? 6 : 4 }} className="grid-item">
           <Paper className="paper-container">
             <StaffList onStaffSelect={handleStaffSelect} newStaffList={staffList} />
           </Paper>
         </Grid>
 
-        {/* Staff Details and Records OR Add Staff Form */}
-        <Grid size={{ xs: 12, md: showAddForm ? 6 : 8 }} className="grid-item">
+        {/* Staff Details and Records OR Add/Edit Staff Form */}
+        <Grid size={{ xs: 12, md: (showAddForm || showEditForm) ? 6 : 8 }} className="grid-item">
           {showAddForm ? (
             <AddStaffForm
+              mode="add"
+              onClose={handleCloseForm}
+              onSubmit={handleSubmitStaff}
+            />
+          ) : showEditForm && editingStaff ? (
+            <AddStaffForm
+              mode="edit"
+              initialData={{
+                firstName: editingStaff.name.split(' ')[0] || '',
+                lastName: editingStaff.name.split(' ')[1] || '',
+                phoneNumber: editingStaff.phone || '',
+                gender: (editingStaff.gender as 'Male' | 'Female' | 'Other') || 'Male',
+                employeeId: editingStaff.employeeId || '',
+                username: editingStaff.username || '',
+                email: editingStaff.email || '',
+                address: editingStaff.address || '',
+                unitNumber: editingStaff.unitNumber || '',
+                licenceExpireDate: editingStaff.licenceExpireDate || '',
+                password: '',
+              }}
               onClose={handleCloseForm}
               onSubmit={handleSubmitStaff}
             />
@@ -73,7 +120,10 @@ const StaffPage: React.FC = () => {
                 overflow: 'hidden'
               }}>
                 <Paper className="paper-container">
-                  <StaffDetails staff={selectedStaff} />
+                  <StaffDetails
+                    staff={selectedStaff}
+                    onEditClick={handleEditPerson}
+                  />
                 </Paper>
               </Grid>
 

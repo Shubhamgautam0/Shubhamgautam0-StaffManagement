@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose, onNavigate }) => {
       {/* Header */}
       <Box sx={{ p: 2, borderBottom: '1px solid #34495e' }}>
         <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold' }}>
-          novagems
+          Dspace-Vite
         </Typography>
       </Box>
 
@@ -173,7 +173,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose, onNavigate }) => {
           boxSizing: 'border-box',
           width: 280,
           backgroundColor: '#2c3e50',
-        },
+        }, 
       }}
     >
       {drawerContent}

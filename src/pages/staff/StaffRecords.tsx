@@ -50,19 +50,9 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
 
   if (!staff) {
     return (
-      <Box
-        sx={{
-          height: '300px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          bgcolor: 'white',
-          color: '#666',
-        }}
-      >
-        <Assignment sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+      <Box className="staff-records-empty">
+        <Assignment className="staff-records-empty-icon" />
+        <Typography variant="h6" className="staff-records-empty-title">
           No Data Found
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -77,31 +67,22 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
       case 0: // Records
         return (
           <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', m: '30px 30px 0 30px' }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+            <Box className="staff-records-header">
+              <Typography variant="h6" className="staff-records-header-title">
                 Record
               </Typography>
               <Select
                 value={recordType}
                 onChange={(e) => setRecordType(e.target.value as 'Records' | 'Notes')}
-                className='item-selector'
+                className="item-selector"
               >
                 <MenuItem value="Records">Records</MenuItem>
                 <MenuItem value="Notes">Notes</MenuItem>
               </Select>
             </Box>
-            <Box
-              sx={{
-                height: '300px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#666',
-              }}
-            >
-              <Assignment sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+            <Box className="staff-records-empty">
+              <Assignment className="staff-records-empty-icon" />
+              <Typography variant="h6" className="staff-records-empty-title">
                 No Data Found
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -112,65 +93,38 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
         );
       case 1: // Schedule
         return (
-          <Box sx={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'auto'
-          }}>
+          <Box className="staff-records-schedule-container">
             <Box>
-              <Typography variant='body1' sx={{ fontWeight: 600, m: 2 }}>
+              <Typography variant="body1" className="staff-records-schedule-title">
                 Schedule
-                </Typography>
+              </Typography>
             </Box>
             <Calendar />
           </Box>
         );
       case 2: // Timesheet
         return (
-          <Box>
+          <Box className="staff-records-tab-content">
             <Timesheet />
           </Box>
         );
       case 3: // Availability
         return (
-          <Box sx={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'auto'
-          }}>
+          <Box className="staff-records-tab-content">
             <Availability />
           </Box>
         );
       case 4:
         return (
-          <Box sx={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'auto'
-          }}>
+          <Box className="staff-records-tab-content">
             <Licence_Certification />
           </Box>
         );
       case 5:
         return (
-          <Box
-            sx={{
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#666',
-            }}
-          >
-            <Settings sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+          <Box className="staff-records-empty">
+            <Settings className="staff-records-empty-icon" />
+            <Typography variant="h6" className="staff-records-empty-title">
               Duty Settings
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -180,29 +134,14 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
         );
       case 6:
          return (
-          <Box sx={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'auto'
-          }}>
+          <Box className="staff-records-tab-content">
             <StaffInformation />
           </Box>
         );
       case 7:
         return (
-        <Box
-            sx={{
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#666',
-            }}
-          >
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+        <Box className="staff-records-empty">
+            <Typography variant="h6" className="staff-records-empty-title">
               More Options
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -216,14 +155,8 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
   };
 
   return (
-    <Paper sx={{
-      bgcolor: 'white',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      
-    }}>
-      <Box sx={{ borderBottom: '1px solid #e0e0e0', flexShrink: 0, overflow: 'auto' }}>
+    <Paper className="staff-records-container">
+      <Box className="staff-records-tabs-container">
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
@@ -235,8 +168,8 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
             <Tab
               key={tab.id}
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  {tab.icon && <tab.icon sx={{ fontSize: 18 }} />}
+                <Box className="staff-records-tab-icon">
+                  {tab.icon && <tab.icon />}
                   {tab.label}
                 </Box>
               }
@@ -245,12 +178,7 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
         </Tabs>
       </Box>
 
-      <Box sx={{
-        flex: 1,
-        overflow: 'auto',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
+      <Box className="staff-records-content">
         {renderTabContent()}
       </Box>
     </Paper>

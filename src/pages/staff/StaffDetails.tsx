@@ -1,52 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
   Avatar,
   IconButton,
-  Chip,
+  Menu,
+  MenuItem,
+  ListItemText,
 } from '@mui/material';
 import {
   Phone,
   Email,
   LocationOn,
-  MoreVert,
+  MoreVert
 } from '@mui/icons-material';
 import type { StaffMember } from '../../data/staffData';
 
 interface StaffDetailsProps {
   staff: StaffMember | null;
+  onEditClick?: (staff: StaffMember) => void;
 }
 
-const StaffDetails: React.FC<StaffDetailsProps> = ({ staff }) => {
+const StaffDetails: React.FC<StaffDetailsProps> = ({ staff, onEditClick }) => {
+  const [menuItem, setMenuitem] = useState<null | HTMLElement>(null);
+  const open = Boolean(menuItem);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setMenuitem(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuitem(null);
+  };
+
+  const handleMenuAction = (action: string) => {
+   if (action === 'edit' && staff && onEditClick) {
+      onEditClick(staff);
+    }
+
+    handleMenuClose();
+  };
   if (!staff) {
     return (
-      <Box
-        sx={{
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          bgcolor: 'white',
-          color: '#666',
-        }}
-      >
-        <Box
-          sx={{
-            width: 64,
-            height: 64,
-            borderRadius: '50%',
-            bgcolor: '#f5f5f5',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            mb: 2,
-          }}
-        >
+      <Box className="staff-details-empty">
+        <Box className="staff-details-empty-icon">
           <Phone sx={{ fontSize: 32, color: '#ccc' }} />
         </Box>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+        <Typography variant="h6" className="staff-details-empty-title">
           No Data Found
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -56,98 +56,42 @@ const StaffDetails: React.FC<StaffDetailsProps> = ({ staff }) => {
     );
   }
 
-  // const getStatusChip = (status: StaffMember['status']) => {
-  //   switch (status) {
-  //     case 'Old Version':
-  //       return (
-  //         <Chip
-  //           label="Old Version"
-  //           size="small"
-  //           sx={{
-  //             backgroundColor: '#fff3cd',
-  //             color: '#856404',
-  //             fontSize: '11px',
-  //             height: '20px',
-  //           }}
-  //         />
-  //       );
-  //     case 'Disabled':
-  //       return (
-  //         <Chip
-  //           label="Disabled"
-  //           size="small"
-  //           sx={{
-  //             backgroundColor: '#f8d7da',
-  //             color: '#721c24',
-  //             fontSize: '11px',
-  //             height: '20px',
-  //           }}
-  //         />
-  //       );
-  //     default:
-  //       return (
-  //         <Chip
-  //           label="Active"
-  //           size="small"
-  //           sx={{
-  //             backgroundColor: '#d4edda',
-  //             color: '#155724',
-  //             fontSize: '11px',
-  //             height: '20px',
-  //           }}
-  //         />
-  //       );
-  //   }
-  // };
-
   return (
-    <Box sx={{ height: '100%', bgcolor: 'white', overflow: 'auto' }}>
-      {/* Header */}
-      <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-          <Avatar
-            sx={{
-              bgcolor: '#4caf50',
-              color: 'white',
-              fontWeight: 'bold',
-              width: 64,
-              height: 64,
-              fontSize: '24px',
-              mr: 3,
-            }}
-          >
+    <Box className="staff-details-container">
+      <Box className="staff-details-header">
+        <Box className="staff-details-profile">
+          <Avatar className="staff-details-avatar">
             {staff.initials}
           </Avatar>
-          <Box sx={{ flex: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-              <Typography variant="h4" sx={{ fontWeight: 600 }}>
+          <Box className="staff-details-info">
+            <Box className="staff-details-name-row">
+              <Typography variant="h4" className="staff-details-name">
                 {staff.name}
               </Typography>
-              {/* {getStatusChip(staff.status)} */}
             </Box>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
-              {staff.name.toLowerCase()} | FEMALE
+            <Typography variant="body1" color="text.secondary" className="staff-details-subtitle">
+              {staff.name.toLowerCase()} | {staff.gender}
             </Typography>
           </Box>
-          <IconButton>
+          <IconButton onClick={handleMenuOpen}>
             <MoreVert />
           </IconButton>
         </Box>
 
         {/* Contact Information */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Phone sx={{ color: '#666', fontSize: 20 }} />
+        <Box className="staff-details-contact">
+          <Box className="staff-details-contact-item">
+            <Phone className="staff-details-contact-icon" />
             <Typography variant="body1">{staff.phone}</Typography>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Email sx={{ color: '#666', fontSize: 20 }} />
+          <Box className="staff-details-contact-item">
+            <Email className="staff-details-contact-icon" />
             <Typography variant="body1" color={staff.email ? 'inherit' : 'text.secondary'}>
               {staff.email || 'Email not available'}
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <LocationOn sx={{ color: '#666', fontSize: 20 }} />
+          <Box className="staff-details-contact-item">
+            <LocationOn className="staff-details-contact-icon" />
             <Typography variant="body1" color={staff.address ? 'inherit' : 'text.secondary'}>
               {staff.address || 'Address not available'}
             </Typography>
@@ -155,15 +99,49 @@ const StaffDetails: React.FC<StaffDetailsProps> = ({ staff }) => {
         </Box>
 
         {/* Area Tags */}
-        <Box sx={{ mt: 3 }}>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+        <Box className="staff-details-area-tags">
+          <Typography variant="body2" color="text.secondary" className="staff-details-area-label">
             Area Tags:
           </Typography>
-          <input type="text"
-          style={{height: '5vh', border: 'none', borderBottom: '1px solid #e0e0e0', width: '100%', }}
-          placeholder="Enter area tags" />
+          <input
+            type="text"
+            className="staff-details-area-input"
+            placeholder="Enter area tags"
+          />
         </Box>
       </Box>
+
+      {/* Staff Actions Menu */}
+      <Menu
+        anchorEl={menuItem}
+        open={open}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        slotProps={{
+          paper: {
+            sx: {
+              minWidth: 150,
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              borderRadius: '8px',
+            }
+          }
+        }}
+      >
+        <MenuItem onClick={() => handleMenuAction('edit')} >
+          <ListItemText primary="Edit" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('change-password')} >
+          <ListItemText primary="Change Password" />
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };
