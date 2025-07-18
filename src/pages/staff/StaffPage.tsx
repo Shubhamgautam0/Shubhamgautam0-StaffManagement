@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Paper, Grid, Fab, Tooltip, Zoom, Container } from '@mui/material';
 
 import StaffList from './StaffList';
@@ -6,6 +6,7 @@ import StaffDetails from './StaffDetails';
 import StaffRecords from './StaffRecords';
 import AddStaffForm from './AddStaffForm';
 import type { StaffMember } from '../../data/staffData';
+import { staffData } from '../../data/staffData';
 import { Add, Person, Schedule } from '@mui/icons-material';
 
 const StaffPage: React.FC = () => {
@@ -15,6 +16,13 @@ const StaffPage: React.FC = () => {
   const [showEditForm, setShowEditForm] = useState(false);
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
   const [staffList, setStaffList] = useState<StaffMember[]>([]);
+
+  // Auto-select first staff member on component mount
+  useEffect(() => {
+    if (staffData.length > 0 && !selectedStaff && !showAddForm && !showEditForm) {
+      setSelectedStaff(staffData[0]);
+    }
+  }, [selectedStaff, showAddForm, showEditForm]);
 
   const handleStaffSelect = (staff: StaffMember) => {
     setSelectedStaff(staff);

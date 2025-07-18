@@ -9,9 +9,19 @@ const monthNames = [
 
 const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-const Calendar: React.FC = () => {
+interface CalendarProps {
+  selectedDate?: Date;
+  onDateSelect?: (date: Date) => void;
+}
+
+const Calendar: React.FC<CalendarProps> = ({
+  selectedDate: propSelectedDate,
+  onDateSelect
+}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date(2025, 6, 1)); // July 1, 2025
+  const [internalSelectedDate, setInternalSelectedDate] = useState(new Date());
+
+  const selectedDate = propSelectedDate || internalSelectedDate;
 
   const getDaysInMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -29,7 +39,12 @@ const Calendar: React.FC = () => {
 
   const handleDateClick = (day: number) => {
     const newSelectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    setSelectedDate(newSelectedDate);
+
+    if (onDateSelect) {
+      onDateSelect(newSelectedDate);
+    } else {
+      setInternalSelectedDate(newSelectedDate);
+    }
   };
 
   const renderCalendarDays = () => {
@@ -37,7 +52,6 @@ const Calendar: React.FC = () => {
     const firstDay = getFirstDayOfMonth(currentDate);
     const days = [];
 
-    // Empty cells before first day
     for (let i = 0; i < firstDay; i++) {
       days.push(
         <Box key={`empty-${i}`} sx={{ width: '100%', height: 50, maxWidth: 50, mx: 'auto' }} />
@@ -60,14 +74,14 @@ const Calendar: React.FC = () => {
             width: '100%',
             height: 50,
             borderRadius: '50%',
-            bgcolor: isSelected ? '#7c4dff' : 'transparent',
-            color: isSelected ? 'white' : '#666',
+            bgcolor: isSelected ? 'var(--clr-purple)' : 'var(--clr-bg-transparent)',
+            color: isSelected ? 'var(--clr-white)' : 'var(--clr-text-secondary)',
             fontWeight: isSelected ? 600 : 400,
             fontSize: '16px',
             maxWidth: 50,
             mx: 'auto',
             '&:hover': {
-              bgcolor: isSelected ? '#7c4dff' : '#f5f5f5',
+              bgcolor: isSelected ? 'var(--clr-purple)' : 'var(--clr-border-lightest)',
             },
           }}
         >
@@ -80,13 +94,13 @@ const Calendar: React.FC = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', height: '100%', p: 3, bgcolor: 'white' }}>
+    <Box sx={{ width: '100%', height: '100%', p: 3, bgcolor: 'var(--clr-bg-white)' }}>
       {/* Header */}
-      <Box display="flex" alignItems="center" justifyContent="space-between" width="30%" mb={3}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" mb={3}>
         <IconButton onClick={() => navigateMonth(-1)} size="small">
           <ChevronLeft />
         </IconButton>
-        <Typography variant="h6" fontWeight={400} color="#333">
+        <Typography variant="h6" fontWeight={400} color="var(--clr-text-primary)">
           {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
         </Typography>
         <IconButton onClick={() => navigateMonth(1)} size="small">

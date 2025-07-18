@@ -3,137 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 import { Box } from '@mui/material';
 import Header from './components/header/Header';
 import Sidebar from './layout/sidebar/sidebar';
-import StaffPage from './pages/staff/StaffPage';
-import { Typography } from '@mui/material';
-
-
-const WatchPage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Watch Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Watch functionality will be implemented here
-    </Typography>
-  </Box>
-);
-
-const SchedulePage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Schedule Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Schedule functionality will be implemented here
-    </Typography>
-  </Box>
-);
-
-const SitesPage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Sites Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Sites functionality will be implemented here
-    </Typography>
-  </Box>
-);
-
-const SalesPage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Sales Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Sales functionality will be implemented here
-    </Typography>
-  </Box>
-);
-
-const CustomerPage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Customer Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Customer functionality will be implemented here
-    </Typography>
-  </Box>
-);
-
-const AreaTagsPage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Area Tags Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Area Tags functionality will be implemented here
-    </Typography>
-  </Box>
-);
-
-const CustomReportsPage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Custom Reports Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Custom Reports functionality will be implemented here
-    </Typography>
-  </Box>
-);
-
-const StaffTimesheetPage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Staff Timesheet Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Staff Timesheet functionality will be implemented here
-    </Typography>
-  </Box>
-);
+import AppRouter from './routing/AppRouter';
 
 const AppContent: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -160,18 +30,7 @@ const AppContent: React.FC = () => {
         onNavigate={handleNavigate}
       />
       <Box sx={{ flex: 1, overflow: 'hidden' }}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/staff" replace />} />
-          <Route path="/watch" element={<WatchPage />} />
-          <Route path="/schedule" element={<SchedulePage />} />
-          <Route path="/sites" element={<SitesPage />} />
-          <Route path="/staff" element={<StaffPage />} />
-          <Route path="/staff/timesheet" element={<StaffTimesheetPage />} />
-          <Route path="/sales" element={<SalesPage />} />
-          <Route path="/customer" element={<CustomerPage />} />
-          <Route path="/area-tags" element={<AreaTagsPage />} />
-          <Route path="/custom-reports" element={<CustomReportsPage />} />
-        </Routes>
+        <AppRouter />
       </Box>
     </Box>
   );

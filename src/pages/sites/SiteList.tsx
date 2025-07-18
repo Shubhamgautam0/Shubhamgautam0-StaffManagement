@@ -19,48 +19,31 @@ import {
 import {
   Search,
   MoreVert,
-  Phone,
-  Visibility,
-  Archive,
-  Block,
   FileUpload,
+  Archive,
 } from '@mui/icons-material';
-import { staffData } from '../../data/staffData';
-import type { StaffMember } from '../../data/staffData';
+import { SiteData } from '../../data/siteData';
+import type { SiteMember } from '../../data/siteData';
 
-
-interface StaffListProps {
-  onStaffSelect: (staff: StaffMember) => void;
-  newStaffList?: StaffMember[];
+interface SiteListProps {
+  onSiteSelect: (site: SiteMember) => void;
+  selectedSite?: SiteMember | null;
+  newSiteList?: SiteMember[];
+  sites?: SiteMember[];
 }
 
-const StaffList: React.FC<StaffListProps> = ({ onStaffSelect, newStaffList = [] }) => {
+const SiteList: React.FC<SiteListProps> = ({ onSiteSelect, selectedSite, newSiteList = [], sites = SiteData }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedStaffId, setSelectedStaffId] = useState<string | null>(null);
-  const [headerAnchorEl, setHeaderAnchorEl] = useState<null | HTMLElement>(null);
   const [activeTab, setActiveTab] = useState(0);
+  const [headerAnchorEl, setHeaderAnchorEl] = useState<null | HTMLElement>(null);
+  const [siteAnchorEl, setSiteAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, staffId: string) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-    setSelectedStaffId(staffId);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedStaffId(null);
-  };
-
-  const handleMenuAction = (action: string) => {
-    console.log(`Action: ${action} for staff: ${selectedStaffId}`);
-    handleMenuClose();
-  };
-
+  // Header menu handlers
   const handleHeaderMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setHeaderAnchorEl(event.currentTarget);
   };
@@ -70,50 +53,58 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect, newStaffList = [] 
   };
 
   const handleImportAction = () => {
-    console.log('Import staff data');
+    console.log('Import sites data');
     handleHeaderMenuClose();
   };
 
-  const getFilteredStaff = () => {
-    // Combine original staff data with new staff
-    const allStaff = [...staffData, ...newStaffList];
-    let filtered = allStaff;
+  // Site menu handlers
+  const handleSiteMenuClick = (event: React.MouseEvent<HTMLElement>, siteId: string) => {
+    event.stopPropagation();
+    setSiteAnchorEl(event.currentTarget);
+    setSelectedSiteId(siteId);
+  };
 
-    if (activeTab === 1) {
-      filtered = allStaff.filter(staff => staff.status === 'Active');
-    } else if (activeTab === 2) {
-      filtered = allStaff.filter(staff => staff.status === 'Old Version');
+  const handleSiteMenuClose = () => {
+    setSiteAnchorEl(null);
+    setSelectedSiteId(null);
+  };
+
+  const handleArchiveAction = () => {
+    console.log(`Archive site: ${selectedSiteId}`);
+    handleSiteMenuClose();
+  };
+
+  const getFilteredSites = () => {
+    const allSites = [...sites, ...newSiteList];
+    let filtered = allSites;
+
+    if (activeTab === 0) {
+      filtered = allSites.filter(site => site.status === 'Mysite');
+    } else if (activeTab === 1) {
+      filtered = allSites.filter(site => site.status === 'Allsite');
     }
 
     if (searchTerm) {
-      filtered = filtered.filter(staff =>
-        staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        staff.phone.includes(searchTerm)
+      filtered = filtered.filter(site =>
+        site.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        site.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        site.phone.includes(searchTerm)
       );
     }
 
     return filtered;
   };
 
-  const getTabCounts = () => {
-    const allStaff = [...staffData, ...newStaffList];
-    const all = allStaff.length;
-    const active = allStaff.filter(staff => staff.status === 'Active').length;
-    const expiring = allStaff.filter(staff => staff.status === 'Old Version').length;
-    return { all, active, expiring };
-  };
-
-  const { all, active, expiring } = getTabCounts();
-  const filteredStaff = getFilteredStaff();
+  const filteredSites = getFilteredSites();
 
   return (
     <Box className="staff-list-container">
       <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
-        <Box sx={{ display: 'flex',justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h5" className="staff-list-title">
-            Staff
+            Sites
           </Typography>
-            <Box />
+          <Box />
           <IconButton size="small" onClick={handleHeaderMenuClick}>
             <MoreVert />
           </IconButton>
@@ -121,15 +112,17 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect, newStaffList = [] 
 
         <TextField
           fullWidth
-          placeholder="Search Staff by Name, Phone Number..."
+          placeholder="Search Sites by Name, Customer Name, Phone..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search sx={{ color: '#666' }} />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search sx={{ color: '#666' }} />
+                </InputAdornment>
+              ),
+            },
           }}
           sx={{
             mb: 2,
@@ -144,21 +137,28 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect, newStaffList = [] 
           onChange={handleTabChange}
           className='staff-tabs'
           variant='scrollable'
-          sx={{flex: 1}}
+          sx={{
+            width: '100%',
+            '& .MuiTabs-flexContainer': {
+              display: 'flex',
+              '& .MuiTab-root': {
+                flex: 1
+              }
+            }
+          }}
         >
-          <Tab label={`All Staff (${all})`} />
-          <Tab label={`Active Staff (${active})`} />
-          <Tab label={`Expiring Skills (${expiring})`} />
+          <Tab label="My Sites" />
+          <Tab label="All Sites" />
         </Tabs>
       </Box>
 
-      {/* Staff List */}
+      {/* Site List */}
       <Box sx={{ flex: 1, overflow: 'auto' }}>
         <List sx={{ p: 0 }}>
-          {filteredStaff.map((staff) => (
-            <ListItem key={staff.id} disablePadding>
+          {filteredSites.map((site) => (
+            <ListItem key={site.id} disablePadding>
               <ListItemButton
-                onClick={() => onStaffSelect(staff)}
+                onClick={() => onSiteSelect(site)}
                 sx={{
                   p: 2,
                   borderBottom: '1px solid #f0f0f0',
@@ -170,36 +170,35 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect, newStaffList = [] 
                 <ListItemAvatar>
                   <Avatar
                     sx={{
-                      bgcolor: '#4caf50',
+                      bgcolor: 'var(--clr-pumpkin)',
                       color: 'white',
                       fontWeight: 'bold',
                       width: 40,
                       height: 40,
                     }}
                   >
-                    {staff.initials}
+                    {site.initials}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
                   primary={
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                       <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                        {staff.name}
+                        {site.name}
                       </Typography>
                     </Box>
                   }
                   secondary={
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <Phone sx={{ fontSize: 14, color: '#666' }} />
                       <Typography variant="body2" color="text.secondary">
-                        {staff.phone}
+                        {site.address}
                       </Typography>
                     </Box>
                   }
                 />
                 <IconButton
                   size="small"
-                  onClick={(e) => handleMenuClick(e, staff.id)}
+                  onClick={(e) => handleSiteMenuClick(e, site.id)}
                 >
                   <MoreVert />
                 </IconButton>
@@ -208,78 +207,6 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect, newStaffList = [] 
           ))}
         </List>
       </Box>
-
-      {/* Staff Actions Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        slotProps={{
-          paper: {
-            sx: {
-              mt: 1,
-              minWidth: 120,
-              boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-              border: '1px solid var(--clr-border-light)',
-              borderRadius: 2,
-            }
-          }
-        }}
-      >
-        <MenuItem
-          onClick={() => handleMenuAction('view')}
-          sx={{
-            py: 1.5,
-            px: 2,
-            fontSize: '14px',
-            '&:hover': {
-              backgroundColor: 'var(--clr-border-lightest)',
-            }
-          }}
-        >
-          <Visibility sx={{ fontSize: 18, mr: 1.5, color: 'var(--clr-text-secondary)' }} />
-          View
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => handleMenuAction('archive')}
-          sx={{
-            py: 1.5,
-            px: 2,
-            fontSize: '14px',
-            '&:hover': {
-              backgroundColor: 'var(--clr-border-lightest)',
-            }
-          }}
-        >
-          <Archive sx={{ fontSize: 18, mr: 1.5, color: 'var(--clr-text-secondary)' }} />
-          Archive
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => handleMenuAction('disable')}
-          sx={{
-            py: 1.5,
-            px: 2,
-            fontSize: '14px',
-            color: 'var(--clr-error)',
-            '&:hover': {
-              backgroundColor: 'var(--clr-error-light)',
-            }
-          }}
-        >
-          <Block sx={{ fontSize: 18, mr: 1.5, color: 'var(--clr-error)' }} />
-          Disable
-        </MenuItem>
-      </Menu>
 
       {/* Header Actions Menu */}
       <Menu
@@ -321,8 +248,49 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect, newStaffList = [] 
           Import
         </MenuItem>
       </Menu>
+
+      {/* Site Actions Menu */}
+      <Menu
+        anchorEl={siteAnchorEl}
+        open={Boolean(siteAnchorEl)}
+        onClose={handleSiteMenuClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        slotProps={{
+          paper: {
+            sx: {
+              mt: 1,
+              minWidth: 120,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+              border: '1px solid var(--clr-border-light)',
+              borderRadius: 2,
+            }
+          }
+        }}
+      >
+        <MenuItem
+          onClick={handleArchiveAction}
+          sx={{
+            py: 1.5,
+            px: 2,
+            fontSize: '14px',
+            '&:hover': {
+              backgroundColor: 'var(--clr-border-lightest)',
+            }
+          }}
+        >
+          <Archive sx={{ fontSize: 18, mr: 1.5, color: 'var(--clr-text-secondary)' }} />
+          Archive
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };
 
-export default StaffList;
+export default SiteList;

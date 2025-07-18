@@ -1,60 +1,18 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import StaffPage from '../pages/staff/StaffPage';
 import { Box, Typography } from '@mui/material';
+import SiteLayout from '../pages/sites/SiteLayout';
+import Schedule from '../pages/schedule/Schedule';
+import WatchLayout from '../pages/watch/WatchLayout';
 
 // Placeholder components for other routes
-const WatchPage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Watch Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Watch functionality will be implemented here
-    </Typography>
-  </Box>
-);
 
-const SchedulePage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Schedule Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Schedule functionality will be implemented here
-    </Typography>
-  </Box>
-);
 
-const SitesPage = () => (
-  <Box sx={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Sites Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Sites functionality will be implemented here
-    </Typography>
-  </Box>
-);
 
 const StaffTimesheetPage = () => (
   <Box sx={{
-    height: '100vh',
+    height: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -70,16 +28,14 @@ const StaffTimesheetPage = () => (
 
 const AppRouter: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/staff" replace />} />
-        <Route path="/watch" element={<WatchPage />} />
-        <Route path="/schedule" element={<SchedulePage />} />
-        <Route path="/sites" element={<SitesPage />} />
-        <Route path="/staff" element={<StaffPage />} />
-        <Route path="/staff/timesheet" element={<StaffTimesheetPage />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<Navigate to="/staff" replace />} />
+      <Route path="/watch" element={<WatchLayout />} />
+      <Route path="/schedule" element={<Schedule />} />
+      <Route path="/sites" element={<SiteLayout />} />
+      <Route path="/staff" element={<StaffPage />} />
+      <Route path="/staff/timesheet" element={<StaffTimesheetPage />} />
+    </Routes>
   );
 };
 

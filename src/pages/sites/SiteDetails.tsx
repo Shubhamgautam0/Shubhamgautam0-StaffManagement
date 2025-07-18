@@ -9,19 +9,20 @@ import {
   ListItemText,
 } from '@mui/material';
 import {
-  Phone,
-  Email,
+    Email,
   LocationOn,
-  MoreVert
+  MoreVert,
+  Person,
+  Phone
 } from '@mui/icons-material';
-import type { StaffMember } from '../../data/staffData';
+import type { SiteMember } from '../../data/siteData';
 
-interface StaffDetailsProps {
-  staff: StaffMember | null;
-  onEditClick?: (staff: StaffMember) => void;
+interface SiteDetailsProps {
+  site: SiteMember | null;
+  onEditClick?: (site: SiteMember) => void;
 }
 
-const StaffDetails: React.FC<StaffDetailsProps> = ({ staff, onEditClick }) => {
+const SiteDetails: React.FC<SiteDetailsProps> = ({ site, onEditClick }) => {
   const [menuItem, setMenuitem] = useState<null | HTMLElement>(null);
   const open = Boolean(menuItem);
 
@@ -34,15 +35,26 @@ const StaffDetails: React.FC<StaffDetailsProps> = ({ staff, onEditClick }) => {
   };
 
   const handleMenuAction = (action: string) => {
-   if (action === 'edit' && staff && onEditClick) {
-      onEditClick(staff);
+   if (action === 'edit' && site && onEditClick) {
+      onEditClick(site);
     }
 
     handleMenuClose();
   };
-  // Staff will always be available now due to auto-selection
-  if (!staff) {
-    return null;
+  if (!site) {
+    return (
+      <Box className="staff-details-empty">
+        <Box className="staff-details-empty-icon">
+          <LocationOn sx={{ fontSize: 32, color: '#ccc' }} />
+        </Box>
+        <Typography variant="h6" className="staff-details-empty-title">
+          No Data Found
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Select a site to view details
+        </Typography>
+      </Box>
+    );
   }
 
   return (
@@ -50,16 +62,16 @@ const StaffDetails: React.FC<StaffDetailsProps> = ({ staff, onEditClick }) => {
       <Box className="staff-details-header">
         <Box className="staff-details-profile">
           <Avatar className="staff-details-avatar">
-            {staff.initials}
+            {site.initials}
           </Avatar>
           <Box className="staff-details-info">
             <Box className="staff-details-name-row">
               <Typography variant="h4" className="staff-details-name">
-                {staff.name}
+                {site.name}
               </Typography>
             </Box>
             <Typography variant="body1" color="text.secondary" className="staff-details-subtitle">
-              {staff.name.toLowerCase()} | {staff.gender}
+              {site.siteId} | {site.scheduleDate}
             </Typography>
           </Box>
           <IconButton onClick={handleMenuOpen}>
@@ -67,22 +79,24 @@ const StaffDetails: React.FC<StaffDetailsProps> = ({ staff, onEditClick }) => {
           </IconButton>
         </Box>
 
-        {/* Contact Information */}
+        {/* Site Information */}
         <Box className="staff-details-contact">
           <Box className="staff-details-contact-item">
-            <Phone className="staff-details-contact-icon" />
-            <Typography variant="body1">{staff.phone}</Typography>
-          </Box>
-          <Box className="staff-details-contact-item">
-            <Email className="staff-details-contact-icon" />
-            <Typography variant="body1" color={staff.email ? 'inherit' : 'text.secondary'}>
-              {staff.email || 'Email not available'}
+            <Person className='staff-details-contact-icon' />
+            <Typography variant="body2" color="text.secondary" >
+              {site.customerName}
             </Typography>
           </Box>
           <Box className="staff-details-contact-item">
-            <LocationOn className="staff-details-contact-icon" />
-            <Typography variant="body1" color={staff.address ? 'inherit' : 'text.secondary'}>
-              {staff.address || 'Address not available'}
+            <Phone className="staff-details-contact-icon" />
+            <Typography variant="body2" color="text.secondary">
+              {site.phone || 'Phone not available'}
+            </Typography>
+          </Box>
+          <Box className="staff-details-contact-item">
+            <Email className="staff-details-contact-icon" />
+            <Typography variant="body2" color="text.secondary" >
+             {site.email}
             </Typography>
           </Box>
         </Box>
@@ -135,4 +149,4 @@ const StaffDetails: React.FC<StaffDetailsProps> = ({ staff, onEditClick }) => {
   );
 };
 
-export default StaffDetails;
+export default SiteDetails;

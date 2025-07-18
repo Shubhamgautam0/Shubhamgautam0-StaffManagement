@@ -48,18 +48,9 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
     
   ];
 
+  // Staff will always be available now due to auto-selection
   if (!staff) {
-    return (
-      <Box className="staff-records-empty">
-        <Assignment className="staff-records-empty-icon" />
-        <Typography variant="h6" className="staff-records-empty-title">
-          No Data Found
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Select a staff member to view records
-        </Typography>
-      </Box>
-    );
+    return null;
   }
 
   const renderTabContent = () => {
@@ -163,6 +154,8 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
           variant="scrollable"
           scrollButtons="auto"
           className="staff-tabs"
+          centered
+          sx={{backgroundColor: '#f5f5f5'}}
         >
           {tabs.map((tab) => (
             <Tab

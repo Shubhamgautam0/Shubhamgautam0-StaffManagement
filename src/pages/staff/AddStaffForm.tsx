@@ -183,7 +183,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
         {mode === 'edit' ? renderPersonalInfo() : renderStepContent()}
       </Box>
 
-      {/* Show buttons only for non-personal info steps in add mode */}
       {mode === 'add' && activeStep !== 0 && (
         <Box sx={{ p: 3, borderTop: '1px solid #eee', display: 'flex', justifyContent: 'flex-start', gap: 2, mb: 3 , flexShrink:0}}>
           <Button
