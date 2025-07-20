@@ -5,6 +5,7 @@ import StaffList from './StaffList';
 import StaffDetails from './StaffDetails';
 import StaffRecords from './StaffRecords';
 import AddStaffForm from './AddStaffForm';
+import StaffTimesheetTable from './StaffTimesheetTable';
 import type { StaffMember } from '../../data/staffData';
 import { staffData } from '../../data/staffData';
 import { Add, Person, Schedule } from '@mui/icons-material';
@@ -16,6 +17,7 @@ const StaffPage: React.FC = () => {
   const [showEditForm, setShowEditForm] = useState(false);
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
   const [staffList, setStaffList] = useState<StaffMember[]>([]);
+  const [showTimesheetTable, setShowTimesheetTable] = useState(false);
 
   // Auto-select first staff member on component mount
   useEffect(() => {
@@ -70,8 +72,11 @@ const StaffPage: React.FC = () => {
   };
 
   const handleTimesheet = () => {
-    console.log('Timesheet clicked');
-    // Add your logic here
+    setShowTimesheetTable(true);
+  };
+
+  const handleCloseTimesheetTable = () => {
+    setShowTimesheetTable(false);
   };
 
   return (
@@ -190,6 +195,11 @@ const StaffPage: React.FC = () => {
           <Add />
         </Fab>
       </Box>
+
+      {/* Timesheet Table Dialog */}
+      {showTimesheetTable && (
+        <StaffTimesheetTable onClose={handleCloseTimesheetTable} />
+      )}
     </Box>
   );
 };

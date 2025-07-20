@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -9,28 +9,53 @@ import {
   TextField,
   Button,
   Checkbox,
+  Alert,
 } from '@mui/material';
+import {
+  updateStaffAvailability,
+  getStaffAvailability,
+  type TimeSlot,
+  type VacationPeriod,
+  type StaffAvailability
+} from '../../data/staffData';
 
-interface TimeSlot {
-  day: string;
-  startTime: string;
-  endTime: string;
+interface AvailabilityProps {
+  staffId: string;
+  staffName: string;
 }
 
-interface VacationPeriod {
-  from: string;
-  to: string;
-}
-
-function Availability() {
-  const [availabilityType, setAvailabilityType] = useState<'fullTime' | 'partTime'>('partTime');
-  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([ ]);
+function Availability({ staffId, staffName }: AvailabilityProps) {
+  const [availabilityType, setAvailabilityType] = useState<'fullTime' | 'partTime'>('fullTime');
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [vacationPeriods, setVacationPeriods] = useState<VacationPeriod[]>([]);
   const [newVacation, setNewVacation] = useState<VacationPeriod>({
-    from: '2025-07-05',
-    to: '2025-07-30'
+    from: '2025-07-20',
+    to: '2025-07-21'
   });
+  const [saveMessage, setSaveMessage] = useState<string>('');
+
+  // Load staff availability data when component mounts or staffId changes
+  useEffect(() => {
+    if (staffId) {
+      const availability = getStaffAvailability(staffId);
+      if (availability) {
+        setAvailabilityType(availability.type);
+        setTimeSlots(availability.timeSlots);
+        setVacationPeriods(availability.vacationPeriods);
+
+        // Set selected days based on time slots
+        const days = availability.timeSlots.map(slot => slot.day);
+        setSelectedDays(days);
+      } else {
+        // Reset to defaults if no availability data
+        setAvailabilityType('fullTime');
+        setTimeSlots([]);
+        setSelectedDays([]);
+        setVacationPeriods([]);
+      }
+    }
+  }, [staffId]);
 
   const daysOfWeek = [
     { key: 'M', label: 'Monday' },
@@ -67,8 +92,31 @@ function Availability() {
   };
 
   const addVacationPeriod = () => {
-    setVacationPeriods([...vacationPeriods, newVacation]);
-    setNewVacation({ from: '', to: '' });
+    if (newVacation.from && newVacation.to) {
+      setVacationPeriods([...vacationPeriods, newVacation]);
+      setNewVacation({ from: '', to: '' });
+    }
+  };
+
+  const removeVacationPeriod = (index: number) => {
+    setVacationPeriods(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSave = () => {
+    const availabilityData: StaffAvailability = {
+      type: availabilityType,
+      timeSlots: timeSlots,
+      vacationPeriods: vacationPeriods
+    };
+
+    const success = updateStaffAvailability(staffId, availabilityData);
+    if (success) {
+      setSaveMessage('Availability saved successfully!');
+      setTimeout(() => setSaveMessage(''), 3000);
+    } else {
+      setSaveMessage('Failed to save availability. Please try again.');
+      setTimeout(() => setSaveMessage(''), 3000);
+    }
   };
 
   const renderAvailableTimeSection = () => {
@@ -116,6 +164,46 @@ function Availability() {
               ADD
             </Button>
           </Box>
+
+          {/* Display existing vacation periods */}
+          {vacationPeriods.length > 0 && (
+            <Box sx={{ mt: 3 }}>
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 500, color: '#6366F1' }}>
+                Vacation Time
+              </Typography>
+              {vacationPeriods.map((period, index) => (
+                <Box key={index} sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  p: 2,
+                  mb: 1,
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: 1,
+                  border: '1px solid #e9ecef'
+                }}>
+                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                    {new Date(period.from).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })} - {new Date(period.to).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </Typography>
+                  <Button
+                    size="small"
+                    onClick={() => removeVacationPeriod(index)}
+                    sx={{ color: '#dc3545', minWidth: 'auto', p: 1 }}
+                  >
+                    ✕
+                  </Button>
+                </Box>
+              ))}
+            </Box>
+          )}
         </Box>
       );
     }
@@ -207,10 +295,26 @@ function Availability() {
 
       {renderAvailableTimeSection()}
 
+      {/* Save Message */}
+      {saveMessage && (
+        <Box sx={{ mt: 3 }}>
+          <Alert severity={saveMessage.includes('successfully') ? 'success' : 'error'}>
+            {saveMessage}
+          </Alert>
+        </Box>
+      )}
+
       <Box sx={{ mt: 4 }}>
         <Button
           variant="contained"
           className="btn-primary"
+          onClick={handleSave}
+          sx={{
+            backgroundColor: '#6366F1',
+            '&:hover': {
+              backgroundColor: '#5856EB'
+            }
+          }}
         >
           SAVE
         </Button>

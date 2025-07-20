@@ -22,6 +22,9 @@ import Availability from './Availability';
 import Licence_Certification from './Licence_Certification';
 import Timesheet from './Timesheet';
 import StaffInformation from './StaffInformation';
+import StaffSchedule from './StaffSchedule';
+import DutySettings from './DutySettings';
+import RecordsComponent from './RecordsComponent';
 
 interface StaffRecordsProps {
   staff: StaffMember | null;
@@ -56,77 +59,98 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 0: // Records
-        return (
-          <Box>
-            <Box className="staff-records-header">
-              <Typography variant="h6" className="staff-records-header-title">
-                Record
-              </Typography>
-              <Select
-                value={recordType}
-                onChange={(e) => setRecordType(e.target.value as 'Records' | 'Notes')}
-                className="item-selector"
-              >
-                <MenuItem value="Records">Records</MenuItem>
-                <MenuItem value="Notes">Notes</MenuItem>
-              </Select>
-            </Box>
-            <Box className="staff-records-empty">
-              <Assignment className="staff-records-empty-icon" />
-              <Typography variant="h6" className="staff-records-empty-title">
-                No Data Found
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                No records available for this staff member
-              </Typography>
-            </Box>
+        return staff ? (
+          <RecordsComponent
+            staffId={staff.id}
+            staffName={staff.name}
+            recordType={recordType}
+            setRecordType={setRecordType}
+          />
+        ) : (
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Typography variant="body1" sx={{ color: 'var(--clr-text-secondary)' }}>
+              No staff selected
+            </Typography>
           </Box>
         );
       case 1: // Schedule
-        return (
-          <Box className="staff-records-schedule-container">
-            <Box>
-              <Typography variant="body1" className="staff-records-schedule-title">
-                Schedule
-              </Typography>
-            </Box>
-            <Calendar />
+        return staff ? (
+          <StaffSchedule
+            staffId={staff.id}
+            staffName={staff.name}
+            staffInitials={staff.initials}
+            staffColor={staff.color}
+          />
+        ) : (
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Typography variant="body1" sx={{ color: 'var(--clr-text-secondary)' }}>
+              No staff selected
+            </Typography>
           </Box>
         );
       case 2: // Timesheet
-        return (
-          <Box className="staff-records-tab-content">
-            <Timesheet />
+        return staff ? (
+          <Timesheet
+            staffId={staff.id}
+            staffName={staff.name}
+          />
+        ) : (
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Typography variant="body1" sx={{ color: 'var(--clr-text-secondary)' }}>
+              No staff selected
+            </Typography>
           </Box>
         );
       case 3: // Availability
-        return (
-          <Box className="staff-records-tab-content">
-            <Availability />
+        return staff ? (
+          <Availability
+            staffId={staff.id}
+            staffName={staff.name}
+          />
+        ) : (
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Typography variant="body1" sx={{ color: 'var(--clr-text-secondary)' }}>
+              No staff selected
+            </Typography>
           </Box>
         );
       case 4:
-        return (
-          <Box className="staff-records-tab-content">
-            <Licence_Certification />
+        return staff ? (
+          <Licence_Certification
+            staffId={staff.id}
+            staffName={staff.name}
+          />
+        ) : (
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Typography variant="body1" sx={{ color: 'var(--clr-text-secondary)' }}>
+              No staff selected
+            </Typography>
           </Box>
         );
       case 5:
-        return (
-          <Box className="staff-records-empty">
-            <Settings className="staff-records-empty-icon" />
-            <Typography variant="h6" className="staff-records-empty-title">
-              Duty Settings
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Duty settings and preferences will be displayed here
+        return staff ? (
+          <DutySettings
+            staffId={staff.id}
+            staffName={staff.name}
+          />
+        ) : (
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Typography variant="body1" sx={{ color: 'var(--clr-text-secondary)' }}>
+              No staff selected
             </Typography>
           </Box>
         );
       case 6:
-         return (
-          <Box className="staff-records-tab-content">
-            <StaffInformation />
+        return staff ? (
+          <StaffInformation
+            staffId={staff.id}
+            staffName={staff.name}
+          />
+        ) : (
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Typography variant="body1" sx={{ color: 'var(--clr-text-secondary)' }}>
+              No staff selected
+            </Typography>
           </Box>
         );
       case 7:
