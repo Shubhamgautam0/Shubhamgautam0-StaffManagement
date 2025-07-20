@@ -1,3 +1,6 @@
+// Import staff data for cross-reference
+import { type StaffMember, staffData } from './staffData';
+
 // Shift related interfaces
 export interface Shift {
   id: string;
@@ -10,6 +13,7 @@ export interface Shift {
   assignedStaff: string[]; // Staff IDs
   assignedStaffNames: string[]; // Staff Names for display
   assignedStaffInitials: string[]; // Staff Initials for avatars
+  assignedStaffDetails?: StaffMember[]; // Full staff details for easy access
   color: string;
   status: 'scheduled' | 'published' | 'completed' | 'cancelled';
   payRate?: string;
@@ -48,8 +52,8 @@ export interface SiteMember {
   username?: string;
   unitNumber?: string;
   licenceExpireDate?: string;
-  shifts: Shift[]; // Added shifts array
-  reports: Report[]; // Added reports array
+  shifts?: { [date: string]: Shift[] }; 
+  reports?: Report[];
 }
 
 export const SiteData: SiteMember[] = [
@@ -64,56 +68,98 @@ export const SiteData: SiteMember[] = [
     siteId: 'ID: 33001',
     status: 'Mysite',
     scheduleDate: 'Last schedule date Jul 10, 2025',
-    shifts: [
-      {
-        id: 'shift-1',
-        siteId: '1',
-        siteName: 'ORANGE TECH HUB',
-        date: '2025-07-18',
-        startTime: '04:00',
-        endTime: '06:00',
-        staffRequired: 1,
-        assignedStaff: ['1', '3'],
-        assignedStaffNames: ['AMERICANGUARD VK', 'Remon G8'],
-        assignedStaffInitials: [],
-        color: '#4285f4',
-        status: 'scheduled',
-        payRate: 'Standard Rate',
-        billRate: 'Standard Bill Rate'
-      },
-      {
-        id: 'shift-1a',
-        siteId: '1',
-        siteName: 'ORANGE TECH HUB',
-        date: '2025-07-19', // Tomorrow's date
-        startTime: '09:00',
-        endTime: '17:00',
-        staffRequired: 2,
-        assignedStaff: ['6'],
-        assignedStaffNames: ['Romeo Lacuesta'],
-        assignedStaffInitials: ['RL'],
-        color: '#8e6ec8',
-        status: 'scheduled',
-        payRate: 'Standard Rate',
-        billRate: 'Standard Bill Rate'
-      },
-      {
-        id: 'shift-1b',
-        siteId: '1',
-        siteName: 'ORANGE TECH HUB',
-        date: '2025-07-20', // Day after tomorrow
-        startTime: '06:00',
-        endTime: '14:00',
-        staffRequired: 1,
-        assignedStaff: ['8'],
-        assignedStaffNames: ['Sally Sms'],
-        assignedStaffInitials: [],
-        color: '#ff9800',
-        status: 'scheduled',
-        payRate: 'Standard Rate',
-        billRate: 'Standard Bill Rate'
-      }
-    ],
+    shifts: {
+      '2025-07-14': [
+        {
+          id: 'shift-1-mon',
+          siteId: '1',
+          siteName: 'ORANGE TECH HUB',
+          date: '2025-07-14',
+          startTime: '09:00',
+          endTime: '17:00',
+          staffRequired: 1,
+          assignedStaff: ['1'],
+          assignedStaffNames: ['AMERICANGUARD VK'],
+          assignedStaffInitials: ['AV'],
+          color: '#2196F3',
+          status: 'scheduled',
+          payRate: 'Standard Rate',
+          billRate: 'Standard Bill Rate'
+        }
+      ],
+      '2025-07-15': [
+        {
+          id: 'shift-1-tue',
+          siteId: '1',
+          siteName: 'ORANGE TECH HUB',
+          date: '2025-07-15',
+          startTime: '04:00',
+          endTime: '06:00',
+          staffRequired: 1,
+          assignedStaff: ['6'],
+          assignedStaffNames: ['Romeo Lacuesta'],
+          assignedStaffInitials: ['RL'],
+          color: '#607D8B',
+          status: 'scheduled',
+          payRate: 'Standard Rate',
+          billRate: 'Standard Bill Rate'
+        }
+      ],
+      '2025-07-16': [
+        {
+          id: 'shift-1-wed',
+          siteId: '1',
+          siteName: 'ORANGE TECH HUB',
+          date: '2025-07-16',
+          startTime: '02:00',
+          endTime: '06:00',
+          staffRequired: 2,
+          assignedStaff: [],
+          assignedStaffNames: [],
+          assignedStaffInitials: [],
+          color: '#f44336',
+          status: 'scheduled',
+          payRate: 'Standard Rate',
+          billRate: 'Standard Bill Rate'
+        }
+      ],
+      '2025-07-17': [
+        {
+          id: 'shift-1-thu',
+          siteId: '1',
+          siteName: 'ORANGE TECH HUB',
+          date: '2025-07-17',
+          startTime: '09:00',
+          endTime: '17:00',
+          staffRequired: 1,
+          assignedStaff: ['3'],
+          assignedStaffNames: ['Remon G8'],
+          assignedStaffInitials: ['RG'],
+          color: '#4CAF50',
+          status: 'scheduled',
+          payRate: 'Standard Rate',
+          billRate: 'Standard Bill Rate'
+        }
+      ],
+      '2025-07-18': [
+        {
+          id: 'shift-1-fri',
+          siteId: '1',
+          siteName: 'ORANGE TECH HUB',
+          date: '2025-07-18',
+          startTime: '03:00',
+          endTime: '05:00',
+          staffRequired: 1,
+          assignedStaff: ['8'],
+          assignedStaffNames: ['Sally Sms'],
+          assignedStaffInitials: ['SS'],
+          color: '#009688',
+          status: 'scheduled',
+          payRate: 'Standard Rate',
+          billRate: 'Standard Bill Rate'
+        }
+      ]
+    },
     reports: [
       {
         id: 'report-1',
@@ -167,50 +213,40 @@ export const SiteData: SiteMember[] = [
     siteId: 'ID: 33002',
     status: 'Mysite',
     scheduleDate: 'Last schedule date Jul 10, 2025',
-    shifts: [
-      {
-        id: 'shift-2',
-        siteId: '2',
-        siteName: 'TARGET Pasadena',
-        date: '2025-07-18',
-        startTime: '09:00',
-        endTime: '17:00',
-        staffRequired: 2,
-        assignedStaff: ['2', '4'],
-        assignedStaffNames: ['Nastia Dick', 'Richard Ibarrazaar'],
-        assignedStaffInitials: [],
-        color: '#8e6ec8',
-        status: 'scheduled'
-      },
-      {
-        id: 'shift-2a',
-        siteId: '2',
-        siteName: 'TARGET Pasadena',
-        date: '2025-07-19', // Tomorrow's date
-        startTime: '06:00',
-        endTime: '14:00',
-        staffRequired: 1,
-        assignedStaff: ['5'],
-        assignedStaffNames: ['Richardo Yumul'],
-        assignedStaffInitials: [],
-        color: '#4caf50',
-        status: 'scheduled'
-      },
-      {
-        id: 'shift-2b',
-        siteId: '2',
-        siteName: 'TARGET Pasadena',
-        date: '2025-07-20', // Day after tomorrow
-        startTime: '10:00',
-        endTime: '18:00',
-        staffRequired: 2,
-        assignedStaff: ['7', '1'],
-        assignedStaffNames: ['SOHIL GUARD', 'AMERICANGUARD VK'],
-        assignedStaffInitials: [],
-        color: '#e91e63',
-        status: 'scheduled'
-      }
-    ],
+    shifts: {
+      '2025-07-15': [
+        {
+          id: 'shift-2-tue',
+          siteId: '2',
+          siteName: 'TARGET Pasadena',
+          date: '2025-07-15',
+          startTime: '06:00',
+          endTime: '08:00',
+          staffRequired: 1,
+          assignedStaff: ['2'],
+          assignedStaffNames: ['Nastia Dick'],
+          assignedStaffInitials: ['ND'],
+          color: '#E91E63',
+          status: 'scheduled'
+        }
+      ],
+      '2025-07-17': [
+        {
+          id: 'shift-2-thu',
+          siteId: '2',
+          siteName: 'TARGET Pasadena',
+          date: '2025-07-17',
+          startTime: '06:00',
+          endTime: '08:00',
+          staffRequired: 2,
+          assignedStaff: [],
+          assignedStaffNames: [],
+          assignedStaffInitials: [],
+          color: '#f44336',
+          status: 'scheduled'
+        }
+      ]
+    },
     reports: [
       {
         id: 'report-4',
@@ -238,7 +274,72 @@ export const SiteData: SiteMember[] = [
     siteId: 'ID: 33003',
     status: 'Mysite',
     scheduleDate: 'Last schedule date Jul 10, 2025',
-    shifts: [],
+    shifts: {
+      '2025-07-16': [
+        {
+          id: 'shift-3-wed',
+          siteId: '3',
+          siteName: 'Walmart Express',
+          date: '2025-07-16',
+          startTime: '08:00',
+          endTime: '08:00',
+          staffRequired: 1,
+          assignedStaff: ['7'],
+          assignedStaffNames: ['SOHIL GUARD'],
+          assignedStaffInitials: ['SG'],
+          color: '#795548',
+          status: 'scheduled'
+        }
+      ],
+      '2025-07-17': [
+        {
+          id: 'shift-3-thu',
+          siteId: '3',
+          siteName: 'Walmart Express',
+          date: '2025-07-17',
+          startTime: '06:00',
+          endTime: '08:00',
+          staffRequired: 2,
+          assignedStaff: [],
+          assignedStaffNames: [],
+          assignedStaffInitials: [],
+          color: '#f44336',
+          status: 'scheduled'
+        }
+      ],
+      '2025-07-18': [
+        {
+          id: 'shift-3-fri',
+          siteId: '3',
+          siteName: 'Walmart Express',
+          date: '2025-07-18',
+          startTime: '08:00',
+          endTime: '08:00',
+          staffRequired: 1,
+          assignedStaff: ['3'],
+          assignedStaffNames: ['Remon G8'],
+          assignedStaffInitials: ['RG'],
+          color: '#4CAF50',
+          status: 'scheduled'
+        }
+      ],
+      '2025-07-19': [
+        {
+          id: 'shift-3-sat',
+          siteId: '3',
+          siteName: 'Walmart Express',
+          date: '2025-07-19',
+          startTime: '08:00',
+          endTime: '08:00',
+          staffRequired: 1,
+          assignedStaff: ['8'],
+          assignedStaffNames: ['Sally Sms'],
+          assignedStaffInitials: ['SS'],
+          color: '#009688',
+          status: 'scheduled'
+        }
+      ]
+    },
     reports: []
   },
   {
@@ -252,7 +353,7 @@ export const SiteData: SiteMember[] = [
     siteId: 'ID: 33004',
     status: 'Allsite',
     scheduleDate: 'Last schedule date Jul 10, 2025',
-    shifts: [],
+    shifts: {},
     reports: []
   },
   {
@@ -266,7 +367,7 @@ export const SiteData: SiteMember[] = [
     siteId: 'ID: 33005',
     status: 'Allsite',
     scheduleDate: 'Last schedule date Jul 10, 2025',
-    shifts: [],
+    shifts: {},
     reports: []
   },
   {
@@ -280,7 +381,7 @@ export const SiteData: SiteMember[] = [
     siteId: 'ID: 33006',
     status: 'Mysite',
     scheduleDate: 'Last schedule date Jul 10, 2025',
-    shifts: [],
+    shifts: {},
     reports: []
   },
   {
@@ -294,7 +395,7 @@ export const SiteData: SiteMember[] = [
     siteId: 'ID: 33007',
     status: 'Allsite',
     scheduleDate: 'Last schedule date Jul 10, 2025',
-    shifts: [],
+    shifts: {},
     reports: []
   }
 ];
@@ -378,15 +479,104 @@ export const getSiteById = (siteId: string): SiteMember | undefined => {
 // Function to get shifts for a specific site and date
 export const getShiftsForSiteAndDate = (siteId: string, date: string): Shift[] => {
   const site = getSiteById(siteId);
-  if (!site) return [];
-  return site.shifts.filter(shift => shift.date === date);
+  if (!site || !site.shifts) return [];
+  return site.shifts[date] || [];
 };
 
 // Function to add shift to a site
 export const addShiftToSite = (siteId: string, shift: Shift): boolean => {
+  console.log('AddShiftToSite - Adding shift:', shift, 'to site:', siteId);
   const siteIndex = SiteData.findIndex(site => site.id === siteId);
-  if (siteIndex === -1) return false;
+  console.log('AddShiftToSite - Site index:', siteIndex);
 
-  SiteData[siteIndex].shifts.push(shift);
+  if (siteIndex === -1) {
+    console.error('AddShiftToSite - Site not found:', siteId);
+    return false;
+  }
+
+  if (!SiteData[siteIndex].shifts) {
+    SiteData[siteIndex].shifts = {};
+    console.log('AddShiftToSite - Created shifts object for site');
+  }
+
+  if (!SiteData[siteIndex].shifts![shift.date]) {
+    SiteData[siteIndex].shifts![shift.date] = [];
+    console.log('AddShiftToSite - Created date array for:', shift.date);
+  }
+
+  SiteData[siteIndex].shifts![shift.date].push(shift);
+  console.log('AddShiftToSite - Shift added successfully. Site shifts:', SiteData[siteIndex].shifts);
   return true;
+};
+
+// Cross-reference utility functions
+export const getStaffDetailsForShift = (shift: Shift): StaffMember[] => {
+  return staffData.filter(staff => shift.assignedStaff.includes(staff.id));
+};
+
+export const getShiftsForStaff = (staffId: string, dateRange?: { start: Date; end: Date }): Array<Shift & { siteName: string; siteId: string }> => {
+  const allShifts: Array<Shift & { siteName: string; siteId: string }> = [];
+
+  SiteData.forEach(site => {
+    if (site.shifts) {
+      Object.entries(site.shifts).forEach(([date, shifts]) => {
+        // Filter by date range if provided
+        if (dateRange) {
+          const shiftDate = new Date(date);
+          if (shiftDate < dateRange.start || shiftDate > dateRange.end) {
+            return;
+          }
+        }
+
+        shifts.forEach(shift => {
+          if (shift.assignedStaff.includes(staffId)) {
+            allShifts.push({
+              ...shift,
+              siteName: site.name,
+              siteId: site.id
+            });
+          }
+        });
+      });
+    }
+  });
+
+  return allShifts.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+};
+
+export const getStaffForSite = (siteId: string, dateRange?: { start: Date; end: Date }): Array<{ staff: StaffMember; shifts: Shift[] }> => {
+  const site = getSiteById(siteId);
+  if (!site || !site.shifts) return [];
+
+  const staffShiftsMap = new Map<string, Shift[]>();
+
+  Object.entries(site.shifts).forEach(([date, shifts]) => {
+    // Filter by date range if provided
+    if (dateRange) {
+      const shiftDate = new Date(date);
+      if (shiftDate < dateRange.start || shiftDate > dateRange.end) {
+        return;
+      }
+    }
+
+    shifts.forEach(shift => {
+      shift.assignedStaff.forEach(staffId => {
+        if (!staffShiftsMap.has(staffId)) {
+          staffShiftsMap.set(staffId, []);
+        }
+        staffShiftsMap.get(staffId)!.push(shift);
+      });
+    });
+  });
+
+  // Convert to array with staff details
+  const result: Array<{ staff: StaffMember; shifts: Shift[] }> = [];
+  staffShiftsMap.forEach((shifts, staffId) => {
+    const staff = staffData.find((s: StaffMember) => s.id === staffId);
+    if (staff) {
+      result.push({ staff, shifts });
+    }
+  });
+
+  return result;
 };

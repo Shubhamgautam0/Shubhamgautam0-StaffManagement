@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import StaffPage from '../pages/staff/StaffPage';
 import { Box, Typography } from '@mui/material';
 import SiteLayout from '../pages/sites/SiteLayout';
-import Schedule from '../pages/schedule/Schedule';
+import Schedule from '../pages/schedule/SiteView';
 import WatchLayout from '../pages/watch/WatchLayout';
 
 // Placeholder components for other routes

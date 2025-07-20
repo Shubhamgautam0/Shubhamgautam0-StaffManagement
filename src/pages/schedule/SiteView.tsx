@@ -17,10 +17,11 @@ import {
   Add,
   CalendarToday,
 } from '@mui/icons-material';
-import { SiteData, type Shift, type SiteMember } from '../../data/siteData';
+import { SiteData, type Shift, type SiteMember, getShiftsForSiteAndDate } from '../../data/siteData';
 import AddShiftDrawer from '../../components/shifts/AddShiftDrawer';
+import StaffView from './StaffView';
 
-interface ScheduleProps {}
+interface ScheduleProps { }
 
 const Schedule: React.FC<ScheduleProps> = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,6 +29,7 @@ const Schedule: React.FC<ScheduleProps> = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showScheduledSites, setShowScheduledSites] = useState(true);
   const [siteView, setSiteView] = useState(false);
+  const [staffView, setStaffView] = useState(false);
   const [calendarAnchorEl, setCalendarAnchorEl] = useState<HTMLElement | null>(null);
   const [calendarDate, setCalendarDate] = useState<Date>(new Date());
 
@@ -35,6 +37,8 @@ const Schedule: React.FC<ScheduleProps> = () => {
   const [isAddShiftOpen, setIsAddShiftOpen] = useState(false);
   const [selectedSiteForShift, setSelectedSiteForShift] = useState<SiteMember | null>(null);
   const [selectedDateForShift, setSelectedDateForShift] = useState<Date>(new Date());
+
+  // No longer needed for unified table structure
 
   const getWeekDates = (startDate: Date) => {
     const dates = [];
@@ -62,14 +66,14 @@ const Schedule: React.FC<ScheduleProps> = () => {
     site.customerName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getShiftsForSiteAndDate = (siteId: string, date: Date): Shift[] => {
-    const site = SiteData.find(s => s.id === siteId);
-    if (!site) return [];
-
+  // Helper function to get shifts for site and date
+  const getSiteShifts = (siteId: string, date: Date): Shift[] => {
     const dateStr = date.toISOString().split('T')[0];
 
-    const siteShifts = site.shifts.filter(shift => shift.date === dateStr);
+    // Get shifts from site data
+    const siteShifts = getShiftsForSiteAndDate(siteId, dateStr);
 
+    // Get user-added shifts
     const userShifts = shifts.filter(shift =>
       shift.siteId === siteId && shift.date === dateStr
     );
@@ -112,7 +116,7 @@ const Schedule: React.FC<ScheduleProps> = () => {
 
   const handleDateSelect = (date: Date) => {
     const startOfWeek = new Date(date);
-    startOfWeek.setDate(date.getDate() - date.getDay() + 1); 
+    startOfWeek.setDate(date.getDate() - date.getDay() + 1);
     setCurrentWeekStart(startOfWeek);
     setSelectedDate(date);
     handleCalendarClose();
@@ -123,7 +127,7 @@ const Schedule: React.FC<ScheduleProps> = () => {
     const month = date.getMonth();
     const firstDay = new Date(year, month, 1);
     const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay()); 
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
 
     const dates = [];
     const currentDate = new Date(startDate);
@@ -164,8 +168,19 @@ const Schedule: React.FC<ScheduleProps> = () => {
     setSelectedSiteForShift(null);
   };
 
+  // If staff view is enabled, render StaffView component
+  if (staffView) {
+    return (
+      <StaffView
+        currentWeekStart={currentWeekStart}
+        onNavigateWeek={navigateWeek}
+        onClose={() => setStaffView(false)}
+      />
+    );
+  }
+
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column',paddingTop: '64px' }}>
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', paddingTop: '64px' }}>
       {/* Header */}
       <Box sx={{
         display: 'flex',
@@ -212,27 +227,27 @@ const Schedule: React.FC<ScheduleProps> = () => {
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ color: 'var(--clr-text-secondary)' }}>
-              Show scheduled sites
-            </Typography>
             <input
               type="checkbox"
               checked={showScheduledSites}
               onChange={(e) => setShowScheduledSites(e.target.checked)}
               style={{ accentColor: 'var(--clr-purple)' }}
             />
+            <Typography variant="body2" sx={{ color: 'var(--clr-text-secondary)' }}>
+              Show scheduled sites
+            </Typography>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ color: 'var(--clr-text-secondary)' }}>
-              Site View
-            </Typography>
             <input
               type="checkbox"
-              checked={siteView}
-              onChange={(e) => setSiteView(e.target.checked)}
+              checked={staffView}
+              onChange={(e) => setStaffView(e.target.checked)}
               style={{ accentColor: 'var(--clr-purple)' }}
             />
+            <Typography variant="body2" sx={{ color: 'var(--clr-text-secondary)' }}>
+              Staff View
+            </Typography>
           </Box>
 
           <Typography variant="body2" sx={{
@@ -245,262 +260,240 @@ const Schedule: React.FC<ScheduleProps> = () => {
         </Box>
       </Box>
 
-      {/* Main Content */}
-      <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+      {/* Search Bar */}
+      <Box sx={{ p: 2, borderBottom: '1px solid var(--clr-border-light)', backgroundColor: 'var(--clr-white)' }}>
+        <TextField
+          fullWidth
+          placeholder="Search Site"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          size="small"
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search sx={{ color: 'var(--clr-text-tertiary)', fontSize: '20px' }} />
+                </InputAdornment>
+              ),
+            }
+          }}
+          sx={{
+            maxWidth: '400px',
+            '& .MuiOutlinedInput-root': {
+              backgroundColor: 'var(--clr-white)',
+              '& fieldset': {
+                borderColor: 'var(--clr-border-light)',
+              },
+              '&:hover fieldset': {
+                borderColor: 'var(--clr-purple)',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: 'var(--clr-purple)',
+              },
+            },
+          }}
+        />
+      </Box>
+
+      {/* Unified Table Structure */}
+      <Box sx={{ flex: 1, overflow: 'auto', backgroundColor: 'var(--clr-bg-lightest)' }}>
+        {/* Table Header */}
         <Box sx={{
-          width: '300px',
-          borderRight: '1px solid var(--clr-border-light)',
-          backgroundColor: 'var(--clr-bg-lightest)',
-          display: 'flex',
-          flexDirection: 'column'
+          display: 'grid',
+          gridTemplateColumns: '300px repeat(7, 1fr)',
+          borderBottom: '2px solid var(--clr-border-light)',
+          backgroundColor: 'var(--clr-white)',
+          position: 'sticky',
+          top: 0,
+          zIndex: 1
         }}>
-          <Box sx={{ p: 2 }}>
-            <TextField
-              fullWidth
-              placeholder="Search Site"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              size="small"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search sx={{ color: 'var(--clr-text-tertiary)', fontSize: '20px' }} />
-                  </InputAdornment>
-                ),
-              }}
+          {/* Site Column Header */}
+          <Box sx={{
+            p: 2,
+            borderRight: '1px solid var(--clr-border-light)',
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: 'var(--clr-bg-light)'
+          }}>
+            <Typography variant="h6" sx={{
+              fontWeight: 600,
+              color: 'var(--clr-text-primary)',
+              fontSize: '14px'
+            }}>
+              Sites
+            </Typography>
+          </Box>
+
+          {/* Date Column Headers */}
+          {weekDates.map((date, index) => (
+            <Box
+              key={index}
+              onClick={() => setSelectedDate(date)}
               sx={{
-                '& .MuiOutlinedInput-root': {
-                  backgroundColor: 'var(--clr-white)',
-                  '& fieldset': {
-                    borderColor: 'var(--clr-border-light)',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'var(--clr-purple)',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'var(--clr-purple)',
-                  },
+                p: 2,
+                textAlign: 'center',
+                borderRight: index < 6 ? '1px solid var(--clr-border-light)' : 'none',
+                cursor: 'pointer',
+                backgroundColor: isSelected(date) ? 'var(--clr-purple-light)' : 'var(--clr-bg-light)',
+                '&:hover': {
+                  backgroundColor: isSelected(date) ? 'var(--clr-purple-light)' : 'var(--clr-bg-lighter)',
                 },
               }}
-            />
-          </Box>
-
-          <Box sx={{ flex: 1, overflow: 'auto' }}>
-            {filteredSites.map((site) => (
-              <Box
-                key={site.id}
-                sx={{
-                  p: 2,
-                  borderBottom: '1px solid var(--clr-border-light)',
-                  backgroundColor: 'var(--clr-white)',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    backgroundColor: 'var(--clr-bg-light)',
-                  },
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                  <Avatar
-                    sx={{
-                      width: 24,
-                      height: 24,
-                      backgroundColor: site.status === 'Mysite' ? 'var(--clr-orange)' : 'var(--clr-success)',
-                      color: 'var(--clr-white)',
-                      fontSize: '12px',
-                      fontWeight: 600
-                    }}
-                  >
-                    {site.initials}
-                  </Avatar>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="body2" sx={{
-                      fontWeight: 600,
-                      color: 'var(--clr-text-primary)',
-                      fontSize: '13px'
-                    }}>
-                      {site.name}
-                    </Typography>
-                    <Typography variant="caption" sx={{
-                      color: 'var(--clr-text-secondary)',
-                      fontSize: '11px'
-                    }}>
-                      {site.siteId}
-                    </Typography>
-                  </Box>
-                </Box>
-
-                <Typography variant="caption" sx={{
-                  color: 'var(--clr-text-tertiary)',
-                  fontSize: '10px',
-                  display: 'block'
-                }}>
-                  {site.address}
-                </Typography>
-
-              </Box>
-            ))}
-          </Box>
+            >
+              <Typography variant="body2" sx={{
+                fontWeight: 600,
+                color: isToday(date) ? 'var(--clr-purple)' : 'var(--clr-text-primary)',
+                fontSize: '12px'
+              }}>
+                {formatDate(date)}
+              </Typography>
+              <Typography variant="caption" sx={{
+                color: 'var(--clr-text-secondary)',
+                fontSize: '10px',
+                display: 'block',
+                mt: 0.5
+              }}>
+                {date.getDate()}
+              </Typography>
+              {isToday(date) && (
+                <Box sx={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--clr-purple)',
+                  margin: '4px auto 0'
+                }} />
+              )}
+            </Box>
+          ))}
         </Box>
 
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <Box sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, 1fr)',
-            borderBottom: '1px solid var(--clr-border-light)',
-            backgroundColor: 'var(--clr-white)'
-          }}>
-            {weekDates.map((date, index) => (
-              <Box
-                key={index}
-                onClick={() => setSelectedDate(date)}
-                sx={{
-                  p: 2,
-                  textAlign: 'center',
-                  borderRight: index < 6 ? '1px solid var(--clr-border-light)' : 'none',
-                  cursor: 'pointer',
-                  backgroundColor: isSelected(date) ? 'var(--clr-purple-light)' : 'transparent',
-                  '&:hover': {
-                    backgroundColor: isSelected(date) ? 'var(--clr-purple-light)' : 'var(--clr-bg-light)',
-                  },
-                }}
-              >
+        {/* Table Rows */}
+        {filteredSites.map((site) => (
+          <Box
+            key={site.id}
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: '300px repeat(7, 1fr)',
+              borderBottom: '1px solid var(--clr-border-light)',
+              minHeight: '80px',
+              backgroundColor: 'var(--clr-white)',
+              '&:hover': {
+                backgroundColor: 'var(--clr-bg-lightest)',
+              },
+            }}
+          >
+            {/* Site Info Cell */}
+            <Box sx={{
+              p: 2,
+              borderRight: '1px solid var(--clr-border-light)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              minHeight: '80px'
+            }}>
+              <Avatar sx={{
+                bgcolor: site.status === 'Mysite' ? 'var(--clr-orange)' : 'var(--clr-success)',
+                color: 'var(--clr-white)',
+                width: 32,
+                height: 32,
+                fontSize: '12px',
+                fontWeight: 600
+              }}>
+                {site.initials}
+              </Avatar>
+              <Box sx={{ flex: 1 }}>
                 <Typography variant="body2" sx={{
                   fontWeight: 600,
-                  color: isToday(date) ? 'var(--clr-purple)' : 'var(--clr-text-primary)',
-                  fontSize: '12px'
+                  color: 'var(--clr-text-primary)',
+                  fontSize: '14px'
                 }}>
-                  {formatDate(date)}
+                  {site.name}
                 </Typography>
                 <Typography variant="caption" sx={{
                   color: 'var(--clr-text-secondary)',
-                  fontSize: '10px',
-                  display: 'block',
-                  mt: 0.5
+                  fontSize: '12px'
                 }}>
-                  {date.getDate()}
+                  {site.siteId}
                 </Typography>
-                {isToday(date) && (
-                  <Box sx={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--clr-purple)',
-                    margin: '4px auto 0'
-                  }} />
-                )}
               </Box>
-            ))}
-          </Box>
+            </Box>
 
-          <Box sx={{ flex: 1, overflow: 'auto' }}>
-            {filteredSites.map((site) => (
-              <Box
-                key={site.id}
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(7, 1fr)',
-                  borderBottom: '1px solid var(--clr-border-light)',
-                  minHeight: '80px',
-                  backgroundColor: 'var(--clr-white)'
-                }}
-              >
-                {weekDates.map((date, dateIndex) => {
-                  const shifts = getShiftsForSiteAndDate(site.id, date);
-                  return (
-                    <Box
-                      key={dateIndex}
-                      sx={{
-                        p: 1,
-                        borderRight: dateIndex < 6 ? '1px solid var(--clr-border-light)' : 'none',
-                        position: 'relative',
-                        minHeight: '80px',
-                        backgroundColor: isSelected(date) ? 'var(--clr-purple-light)' : 'transparent',
-                      }}
-                    >
-                      <IconButton
-                        size="small"
-                        onClick={() => handleAddShift(site.id, date)}
+            {/* Calendar Cells */}
+            {weekDates.map((date, dateIndex) => {
+              const shifts = getSiteShifts(site.id, date);
+              return (
+                <Box
+                  key={dateIndex}
+                  sx={{
+                    p: 1,
+                    borderRight: dateIndex < 6 ? '1px solid var(--clr-border-light)' : 'none',
+                    position: 'relative',
+                    minHeight: '80px',
+                    backgroundColor: isSelected(date) ? 'var(--clr-purple-light)' : 'transparent',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-start'
+                  }}
+                >
+                  <IconButton
+                    size="small"
+                    onClick={() => handleAddShift(site.id, date)}
+                    sx={{
+                      position: 'absolute',
+                      top: 4,
+                      right: 4,
+                      width: 20,
+                      height: 20,
+                      backgroundColor: 'var(--clr-bg-light)',
+                      color: 'var(--clr-text-tertiary)',
+                      '&:hover': {
+                        backgroundColor: 'var(--clr-purple)',
+                        color: 'var(--clr-white)',
+                      },
+                    }}
+                  >
+                    <Add sx={{ fontSize: '14px' }} />
+                  </IconButton>
+
+                  <Box sx={{ mt: 3, flex: 1 }}>
+                    {shifts.map((shift) => (
+                      <Box
+                        key={shift.id}
                         sx={{
-                          position: 'absolute',
-                          top: 4,
-                          right: 4,
-                          width: 20,
-                          height: 20,
-                          backgroundColor: 'var(--clr-bg-light)',
-                          color: 'var(--clr-text-tertiary)',
-                          '&:hover': {
-                            backgroundColor: 'var(--clr-purple)',
-                            color: 'var(--clr-white)',
-                          },
+                          mb: 1,
+                          p: 1,
+                          borderRadius: 1,
+                          backgroundColor: shift.color + '20',
+                          border: `1px solid ${shift.color}`,
+                          cursor: 'pointer',
                         }}
                       >
-                        <Add sx={{ fontSize: '14px' }} />
-                      </IconButton>
-
-                      <Box sx={{ mt: 3 }}>
-                        {shifts.map((shift) => (
-                          <Box
-                            key={shift.id}
-                            sx={{
-                              mb: 1,
-                              p: 1,
-                              borderRadius: 1,
-                              backgroundColor: shift.color + '20',
-                              border: `1px solid ${shift.color}`,
-                              cursor: 'pointer',
-                              '&:hover': {
-                                backgroundColor: shift.color + '30',
-                              },
-                            }}
-                          >
-                            <Typography variant="caption" sx={{
-                              color: 'var(--clr-text-primary)',
-                              fontWeight: 600,
-                              fontSize: '10px',
-                              display: 'block'
-                            }}>
-                              {shift.startTime} - {shift.endTime}
-                            </Typography>
-
-                            <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5, flexWrap: 'wrap' }}>
-                              {shift.assignedStaffInitials.map((initials, staffIndex) => (
-                                <Avatar
-                                  key={staffIndex}
-                                  sx={{
-                                    width: 16,
-                                    height: 16,
-                                    fontSize: '8px',
-                                    fontWeight: 600,
-                                    backgroundColor: shift.color,
-                                    color: 'var(--clr-white)',
-                                  }}
-                                >
-                                  {initials}
-                                </Avatar>
-                              ))}
-                            </Box>
-
-                            {shift.assignedStaffNames.length > 0 && (
-                              <Typography variant="caption" sx={{
-                                color: 'var(--clr-text-secondary)',
-                                fontSize: '8px',
-                                display: 'block',
-                                mt: 0.5,
-                                lineHeight: 1.2
-                              }}>
-                                {shift.assignedStaffNames.join(', ')}
-                              </Typography>
-                            )}
-                          </Box>
-                        ))}
+                        <Typography variant="caption" sx={{
+                          color: shift.color,
+                          fontSize: '10px',
+                          fontWeight: 600,
+                          display: 'block'
+                        }}>
+                          {shift.startTime} - {shift.endTime}
+                        </Typography>
+                        {shift.assignedStaffNames.length > 0 && (
+                          <Typography variant="caption" sx={{
+                            color: shift.color,
+                            fontSize: '9px',
+                            display: 'block'
+                          }}>
+                            {shift.assignedStaffNames.join(', ')}
+                          </Typography>
+                        )}
                       </Box>
-                    </Box>
-                  );
-                })}
-              </Box>
-            ))}
+                    ))}
+                  </Box>
+                </Box>
+              );
+            })}
           </Box>
-        </Box>
+        ))}
       </Box>
 
       {/* Calendar Popover */}
