@@ -26,6 +26,10 @@ import CheckList from './checkList';
 import Shifts from './Shifts';
 import ReportComponent from './report';
 import SiteInvoice from './siteInvoice';
+import Licence from './Licence';
+import Checkpoint from './Checkpoint';
+import CheckpointTour from './CheckpointTour';
+import Rate from './Rate';
 import Visitors from './Visitors';
 
 interface SiteRecordsProps {
@@ -126,74 +130,24 @@ const SiteRecords: React.FC<SiteRecordsProps> = ({ site, sites, onSitesUpdate })
         );
       case 5:
         return (
-          <Box sx={{ p: 3 }}>
-            <Box sx={{ p: 4, height: '100%' }}>
-              {/* Header */}
-              <Box >
-                <Typography variant="h4" sx={{
-                  fontWeight: 600,
-                  color: '#333',
-                  fontSize: '28px',
-                  mb: 2
-                }}>
-                  Licences & certifications
-                </Typography>
-                <Button
-                  variant="text"
-                  startIcon={<Add />}
-                  // onClick={handleAddLicence}
-                  className="btn-text"
-                >
-                  Add Licences
-                </Button>
-              </Box>
-            </Box>
-          </Box>
+          <Licence siteId={site?.id} />
         );
       case 6:
         return (
-          <Box sx={{ p: 3 }}>
-             
-              {/* Header */}
-              <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', }}>
-                <Typography variant="h4" sx={{
-                  fontWeight: 600,
-                  color: '#333',
-                  fontSize: '28px',
-                  mb: 2
-                }}>
-                 Checkpoint Tours
-                </Typography>
-                <Button
-                  variant="text"
-                  startIcon={<Add />}
-                  // onClick={handleAddLicence}
-                  className="btn-text"
-                >
-                  Add Checkpoint Tours
-                </Button>
-              </Box>
-            </Box>
+          <CheckpointTour siteId={site?.id} />
         );
       case 7:
         return (
-          <Box sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ color: '#666' }}>
-              Checkpoints
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              Checkpoints functionality will be implemented here
-            </Typography>
-          </Box>
+          <Checkpoint siteId={site?.id} />
         );
       case 8:
         return (
           <Box sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ color: 'var(--clr-text-secondary)' }}>
-              More
+             setting 
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              More functionality will be implemented here
+              Setting functionality will be implemented here
             </Typography>
           </Box>
         );
@@ -205,23 +159,7 @@ const SiteRecords: React.FC<SiteRecordsProps> = ({ site, sites, onSitesUpdate })
         );
       case 10:
         return (
-          <Box sx={{ p: 3,display: 'flex', flexDirection: 'row', gap: 2  }}>
-            <Typography variant="h4" sx={{
-                  fontWeight: 600,
-                  color: 'var(--clr-text-primary)',
-                  fontSize: '28px',
-                  mt: 1
-                }}>
-              Rates
-                </Typography>
-                <Select 
-                  value={'Company Setting'}
-                  className='item-selector'
-                >
-                  <MenuItem value="Company Setting">Company Setting</MenuItem>
-                  <MenuItem value="Custom Setting">Custom Setting</MenuItem>
-                  </Select>
-          </Box>
+          <Rate siteId={site?.id} />
         );
       default:
         return null;

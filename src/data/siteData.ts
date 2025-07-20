@@ -35,6 +35,49 @@ export interface Report {
   timeDuration: string;
 }
 
+export interface SiteLicence {
+  id: string;
+  type: string;
+  number?: string;
+  expiryDate?: string;
+  issuedDate?: string;
+}
+
+export interface LicenceType {
+  id: string;
+  name: string;
+}
+
+export interface SiteCheckpoint {
+  id: string;
+  name: string;
+  qrCode?: string;
+  nfcTag?: string;
+  instructions?: string;
+  attachments?: string[];
+  isReportingCheckpoint: boolean;
+  reportRequired: boolean;
+  attachmentRequired: boolean;
+  photoRequired: boolean;
+  photoTimeLimit?: number;
+  createdDate: string;
+}
+
+export interface CheckpointTour {
+  id: string;
+  name: string;
+  isActive: boolean;
+  type: 'Static' | 'Mobile Patrol';
+  timeDuration: {
+    type: string;
+    timeLimit: string;
+  };
+  assignedCheckpoints: string[];
+  createdDate: string;
+}
+
+
+
 export interface SiteMember {
   id: string;
   name: string;
@@ -52,8 +95,12 @@ export interface SiteMember {
   username?: string;
   unitNumber?: string;
   licenceExpireDate?: string;
-  shifts?: { [date: string]: Shift[] }; 
+  shifts?: { [date: string]: Shift[] };
   reports?: Report[];
+  licences?: SiteLicence[];
+  checkpoints?: SiteCheckpoint[];
+  checkpointTours?: CheckpointTour[];
+  rateSetting?: 'Company Setting' | 'Custom Setting';
 }
 
 export const SiteData: SiteMember[] = [
@@ -580,3 +627,208 @@ export const getStaffForSite = (siteId: string, dateRange?: { start: Date; end: 
 
   return result;
 };
+
+// Global licence types storage
+export const globalLicenceTypes: LicenceType[] = [
+  { id: '1', name: 'Driver Licence - Class 5' },
+  { id: '2', name: 'Testing' },
+  { id: '3', name: '[Object KeyboardEvent]' },
+  { id: '4', name: 'M.,' },
+  { id: '5', name: 'Test' },
+  { id: '6', name: 'Test00' },
+  { id: '7', name: 'Test000' },
+  { id: '8', name: 'Testtest' },
+  { id: '9', name: 'Truk' },
+  { id: '10', name: 'Undefined' },
+];
+
+// Add new licence type
+export const addLicenceType = (name: string): LicenceType => {
+  const newType: LicenceType = {
+    id: Date.now().toString(),
+    name: name.trim()
+  };
+  globalLicenceTypes.push(newType);
+  return newType;
+};
+
+// Get all licence types
+export const getLicenceTypes = (): LicenceType[] => {
+  return globalLicenceTypes;
+};
+
+// Add licence to site
+export const addSiteLicence = (siteId: string, licence: Omit<SiteLicence, 'id'>): boolean => {
+  const siteIndex = SiteData.findIndex(site => site.id === siteId);
+  if (siteIndex === -1) return false;
+
+  if (!SiteData[siteIndex].licences) {
+    SiteData[siteIndex].licences = [];
+  }
+
+  const newLicence: SiteLicence = {
+    ...licence,
+    id: Date.now().toString()
+  };
+
+  SiteData[siteIndex].licences!.push(newLicence);
+  return true;
+};
+
+// Remove licence from site
+export const removeSiteLicence = (siteId: string, licenceId: string): boolean => {
+  const siteIndex = SiteData.findIndex(site => site.id === siteId);
+  if (siteIndex === -1) return false;
+
+  if (SiteData[siteIndex].licences) {
+    SiteData[siteIndex].licences = SiteData[siteIndex].licences!.filter(
+      licence => licence.id !== licenceId
+    );
+  }
+
+  return true;
+};
+
+// Get site licences
+export const getSiteLicences = (siteId: string): SiteLicence[] => {
+  const site = SiteData.find(site => site.id === siteId);
+  return site?.licences || [];
+};
+
+// Update site licence
+export const updateSiteLicence = (siteId: string, licenceId: string, updates: Partial<SiteLicence>): boolean => {
+  const siteIndex = SiteData.findIndex(site => site.id === siteId);
+  if (siteIndex === -1) return false;
+
+  if (SiteData[siteIndex].licences) {
+    const licenceIndex = SiteData[siteIndex].licences!.findIndex(licence => licence.id === licenceId);
+    if (licenceIndex !== -1) {
+      SiteData[siteIndex].licences![licenceIndex] = {
+        ...SiteData[siteIndex].licences![licenceIndex],
+        ...updates
+      };
+      return true;
+    }
+  }
+
+  return false;
+};
+
+// Checkpoint Management Functions
+
+// Add checkpoint to site
+export const addSiteCheckpoint = (siteId: string, checkpoint: Omit<SiteCheckpoint, 'id'>): boolean => {
+  const siteIndex = SiteData.findIndex(site => site.id === siteId);
+  if (siteIndex === -1) return false;
+
+  if (!SiteData[siteIndex].checkpoints) {
+    SiteData[siteIndex].checkpoints = [];
+  }
+
+  const newCheckpoint: SiteCheckpoint = {
+    ...checkpoint,
+    id: Date.now().toString()
+  };
+
+  SiteData[siteIndex].checkpoints!.push(newCheckpoint);
+  return true;
+};
+
+// Remove checkpoint from site
+export const removeSiteCheckpoint = (siteId: string, checkpointId: string): boolean => {
+  const siteIndex = SiteData.findIndex(site => site.id === siteId);
+  if (siteIndex === -1) return false;
+
+  if (SiteData[siteIndex].checkpoints) {
+    SiteData[siteIndex].checkpoints = SiteData[siteIndex].checkpoints!.filter(
+      checkpoint => checkpoint.id !== checkpointId
+    );
+  }
+
+  return true;
+};
+
+// Get site checkpoints
+export const getSiteCheckpoints = (siteId: string): SiteCheckpoint[] => {
+  const site = SiteData.find(site => site.id === siteId);
+  return site?.checkpoints || [];
+};
+
+// Update site checkpoint
+export const updateSiteCheckpoint = (siteId: string, checkpointId: string, updates: Partial<SiteCheckpoint>): boolean => {
+  const siteIndex = SiteData.findIndex(site => site.id === siteId);
+  if (siteIndex === -1) return false;
+
+  if (SiteData[siteIndex].checkpoints) {
+    const checkpointIndex = SiteData[siteIndex].checkpoints!.findIndex(checkpoint => checkpoint.id === checkpointId);
+    if (checkpointIndex !== -1) {
+      SiteData[siteIndex].checkpoints![checkpointIndex] = {
+        ...SiteData[siteIndex].checkpoints![checkpointIndex],
+        ...updates
+      };
+      return true;
+    }
+  }
+
+  return false;
+};
+
+// Checkpoint Tour Management Functions
+
+// Add checkpoint tour to site
+export const addSiteCheckpointTour = (siteId: string, tour: Omit<CheckpointTour, 'id'>): boolean => {
+  const siteIndex = SiteData.findIndex(site => site.id === siteId);
+  if (siteIndex === -1) return false;
+
+  if (!SiteData[siteIndex].checkpointTours) {
+    SiteData[siteIndex].checkpointTours = [];
+  }
+
+  const newTour: CheckpointTour = {
+    ...tour,
+    id: Date.now().toString()
+  };
+
+  SiteData[siteIndex].checkpointTours!.push(newTour);
+  return true;
+};
+
+// Remove checkpoint tour from site
+export const removeSiteCheckpointTour = (siteId: string, tourId: string): boolean => {
+  const siteIndex = SiteData.findIndex(site => site.id === siteId);
+  if (siteIndex === -1) return false;
+
+  if (SiteData[siteIndex].checkpointTours) {
+    SiteData[siteIndex].checkpointTours = SiteData[siteIndex].checkpointTours!.filter(
+      tour => tour.id !== tourId
+    );
+  }
+
+  return true;
+};
+
+// Get site checkpoint tours
+export const getSiteCheckpointTours = (siteId: string): CheckpointTour[] => {
+  const site = SiteData.find(site => site.id === siteId);
+  return site?.checkpointTours || [];
+};
+
+// Update site checkpoint tour
+export const updateSiteCheckpointTour = (siteId: string, tourId: string, updates: Partial<CheckpointTour>): boolean => {
+  const siteIndex = SiteData.findIndex(site => site.id === siteId);
+  if (siteIndex === -1) return false;
+
+  if (SiteData[siteIndex].checkpointTours) {
+    const tourIndex = SiteData[siteIndex].checkpointTours!.findIndex(tour => tour.id === tourId);
+    if (tourIndex !== -1) {
+      SiteData[siteIndex].checkpointTours![tourIndex] = {
+        ...SiteData[siteIndex].checkpointTours![tourIndex],
+        ...updates
+      };
+      return true;
+    }
+  }
+
+  return false;
+};
+
