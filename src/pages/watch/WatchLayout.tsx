@@ -3,15 +3,17 @@ import { Box, Paper, Grid, Fab, Tooltip, Zoom } from '@mui/material';
 import ActiveSites from './ActiveSites';
 import SiteDetails from './SiteDetails';
 import MapAndLogs from './MapAndLogs';
+import WriteReportForm from '../../components/forms/WriteReportForm';
 import { watchSitesData, type WatchSite } from '../../data/watchData';
-import { Add, Visibility, Security, LocationOn } from '@mui/icons-material';
+import { Add, Visibility, Security, LocationOn, DocumentScanner } from '@mui/icons-material';
 
-interface WatchLayoutProps {}
+interface WatchLayoutProps { }
 
 const WatchLayout: React.FC<WatchLayoutProps> = () => {
   const [sites, setSites] = useState<WatchSite[]>(watchSitesData);
   const [selectedSite, setSelectedSite] = useState<WatchSite | null>(null);
   const [fabHovered, setFabHovered] = useState(false);
+  const [isWriteReportOpen, setIsWriteReportOpen] = useState(false);
 
   useEffect(() => {
     if (sites.length > 0 && !selectedSite) {
@@ -33,6 +35,19 @@ const WatchLayout: React.FC<WatchLayoutProps> = () => {
     if (site) {
       setSelectedSite(site);
     }
+  };
+
+  const handleWriteReport = () => {
+    setIsWriteReportOpen(true);
+  };
+
+  const handleCloseWriteReport = () => {
+    setIsWriteReportOpen(false);
+  };
+
+  const handleSaveReport = (reportData: any) => {
+    console.log('Report saved:', reportData);
+    setIsWriteReportOpen(false);
   };
 
   return (
@@ -91,38 +106,15 @@ const WatchLayout: React.FC<WatchLayoutProps> = () => {
         onMouseEnter={() => setFabHovered(true)}
         onMouseLeave={() => setFabHovered(false)}
       >
-        {/* Live Monitoring */}
-        <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '100ms' : '0ms' }}>
-          <Tooltip title="Live Monitoring" placement="left">
-            <Fab
-              size="large"
-              className="fab-primary"
-            >
-              <Visibility />
-            </Fab>
-          </Tooltip>
-        </Zoom>
-
-        {/* Security Alert */}
+        {/* Write Report */}
         <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '50ms' : '0ms' }}>
-          <Tooltip title="Security Alert" placement="left">
+          <Tooltip title="write report" placement="left">
             <Fab
               size="large"
+              onClick={handleWriteReport}
               className="fab-primary"
             >
-              <Security />
-            </Fab>
-          </Tooltip>
-        </Zoom>
-
-        {/* Add New Site */}
-        <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '50ms' : '0ms' }}>
-          <Tooltip title="Add New Site" placement="left">
-            <Fab
-              size="large"
-              className="fab-primary"
-            >
-              <LocationOn />
+              <DocumentScanner />
             </Fab>
           </Tooltip>
         </Zoom>
@@ -135,6 +127,13 @@ const WatchLayout: React.FC<WatchLayoutProps> = () => {
           <Add />
         </Fab>
       </Box>
+
+      {/* Write Report Drawer */}
+      <WriteReportForm
+        open={isWriteReportOpen}
+        onClose={handleCloseWriteReport}
+        onSave={handleSaveReport}
+      />
     </Box>
   );
 };

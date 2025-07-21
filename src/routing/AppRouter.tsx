@@ -5,26 +5,25 @@ import { Box, Typography } from '@mui/material';
 import SiteLayout from '../pages/sites/SiteLayout';
 import Schedule from '../pages/schedule/SiteView';
 import WatchLayout from '../pages/watch/WatchLayout';
+import StaffTimesheetTable from '../pages/staff/StaffTimesheetTable';
+import SiteInvoice from '../pages/sites/siteInvoice';
 
 // Placeholder components for other routes
 
 
 
-const StaffTimesheetPage = () => (
-  <Box sx={{
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 3
-  }}>
-    <Typography variant="h4">Staff Timesheet Page</Typography>
-    <Typography variant="body1" color="text.secondary">
-      Staff Timesheet functionality will be implemented here
-    </Typography>
-  </Box>
-);
+const StaffTimesheetPage = () => {
+  const handleClose = () => {
+    // Navigate back to staff page
+    window.history.back();
+  };
+
+  return (
+    <Box className="page-container">
+      <StaffTimesheetTable onClose={handleClose} />
+    </Box>
+  );
+};
 
 const AppRouter: React.FC = () => {
   return (
@@ -35,6 +34,7 @@ const AppRouter: React.FC = () => {
       <Route path="/sites" element={<SiteLayout />} />
       <Route path="/staff" element={<StaffPage />} />
       <Route path="/staff/timesheet" element={<StaffTimesheetPage />} />
+      <Route path="/site/invoice" element={<SiteInvoice />} />
     </Routes>
   );
 };

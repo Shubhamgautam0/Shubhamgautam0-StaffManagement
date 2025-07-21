@@ -29,10 +29,16 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ open, onClose, onNavigate }) => {
-  const [staffOpen, setStaffOpen] = React.useState(false);
+  const [openSubmenus, setOpenSubmenus] = React.useState<Record<string, boolean>>({
+    staff: false,
+    sites: false,
+  });
 
-  const handleStaffClick = () => {
-    setStaffOpen(!staffOpen);
+  const handleSubmenuClick = (menuKey: string) => {
+    setOpenSubmenus(prev => ({
+      ...prev,
+      [menuKey]: !prev[menuKey]
+    }));
   };
 
   const menuItems = [
@@ -40,20 +46,36 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose, onNavigate }) => {
       text: 'Watch',
       icon: <Visibility />,
       path: '/watch',
+      key: 'watch',
     },
     {
       text: 'Schedule',
       icon: <Schedule />,
       path: '/schedule',
+      key: 'schedule',
     },
     {
       text: 'Sites',
       icon: <LocationOn />,
-      path: '/sites',
+      key: 'sites',
+      hasSubmenu: true,
+      submenu: [
+        {
+          text: 'All Site',
+          icon: <LocationOn />,
+          path: '/sites',
+        },
+        {
+          text: 'Site Invoice',
+          icon: <Assessment />,
+          path: '/site/invoice',
+        },
+      ],
     },
     {
       text: 'Staff',
       icon: <People />,
+      key: 'staff',
       hasSubmenu: true,
       submenu: [
         {
@@ -82,15 +104,19 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose, onNavigate }) => {
       {/* Navigation Menu */}
       <List sx={{ pt: 1 }}>
         {menuItems.map((item) => (
-          <React.Fragment key={item.text}>
+          <React.Fragment key={item.key}>
             <ListItem disablePadding>
               <ListItemButton
                 onClick={() => {
-                  if (item.hasSubmenu && item.text === 'Staff') {
-                    handleStaffClick();
+                  if (item.hasSubmenu) {
+                    handleSubmenuClick(item.key);
                   } else if (item.path) {
-                    onNavigate(item.path);
-                    onClose();
+                    try {
+                      onNavigate(item.path);
+                      onClose();
+                    } catch (error) {
+                      console.error('Navigation error:', error);
+                    }
                   }
                 }}
                 sx={{
@@ -114,21 +140,25 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose, onNavigate }) => {
                   }}
                 />
                 {item.hasSubmenu && (
-                  staffOpen ? <ExpandLess /> : <ExpandMore />
+                  openSubmenus[item.key] ? <ExpandLess /> : <ExpandMore />
                 )}
               </ListItemButton>
             </ListItem>
 
-            {/* Staff Submenu */}
-            {item.text === 'Staff' && item.submenu && (
-              <Collapse in={staffOpen} timeout="auto" unmountOnExit>
+            {/* Submenu */}
+            {item.hasSubmenu && item.submenu && (
+              <Collapse in={openSubmenus[item.key]} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {item.submenu.map((subItem) => (
                     <ListItem key={subItem.text} disablePadding>
                       <ListItemButton
                         onClick={() => {
-                          onNavigate(subItem.path);
-                          onClose();
+                          try {
+                            onNavigate(subItem.path);
+                            onClose();
+                          } catch (error) {
+                            console.error('Submenu navigation error:', error);
+                          }
                         }}
                         sx={{
                           pl: 4,

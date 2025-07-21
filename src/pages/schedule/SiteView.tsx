@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import {
   Box,
   Typography,
@@ -9,6 +9,12 @@ import {
   Popover,
   Paper,
   Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Divider,
 } from '@mui/material';
 import {
   Search,
@@ -16,10 +22,23 @@ import {
   ChevronRight,
   Add,
   CalendarToday,
+  MoreVert,
+  Analytics,
+  Schedule as ScheduleIcon,
+  People,
+  PlayArrow,
+  ContentCopy,
+  Publish,
+  UnpublishedOutlined,
+  Delete,
+  Download,
+  Upload,
+  KeyboardArrowDown,
 } from '@mui/icons-material';
-import { SiteData, type Shift, type SiteMember, getShiftsForSiteAndDate } from '../../data/siteData';
+import { SiteData, type Shift, type SiteMember, getShiftsForSiteAndDate, shiftMenuData, type ShiftMenuItem } from '../../data/siteData';
 import AddShiftDrawer from '../../components/shifts/AddShiftDrawer';
 import StaffView from './StaffView';
+import DropdownMenu from '../../components/common/DropdownMenu';
 
 interface ScheduleProps { }
 
@@ -27,11 +46,26 @@ const Schedule: React.FC<ScheduleProps> = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [showScheduledSites, setShowScheduledSites] = useState(true);
-  const [siteView, setSiteView] = useState(false);
+  const [showScheduledSites, setShowScheduledSites] = useState(false);
+  // const [siteView, setSiteView] = useState(false);
   const [staffView, setStaffView] = useState(false);
   const [calendarAnchorEl, setCalendarAnchorEl] = useState<HTMLElement | null>(null);
   const [calendarDate, setCalendarDate] = useState<Date>(new Date());
+  const [isActionDrawerOpen, setIsActionDrawerOpen] = useState(false);
+
+  // Action menu items
+  const actionMenuItems = [
+    { id: 'time-analysis', label: 'Show Time Analysis', icon: Analytics },
+    { id: 'shift-analysis', label: 'Show Shift Analysis', icon: ScheduleIcon },
+    { id: 'staff-analysis', label: 'Show Staff Analysis', icon: People },
+    { id: 'duty-analysis', label: 'Show Start Duty Analysis', icon: PlayArrow },
+    { id: 'copy-last-week', label: 'Copy Last Week', icon: ContentCopy },
+    { id: 'publish-week', label: 'Publish This Week', icon: Publish },
+    { id: 'unpublish-week', label: 'Unpublish This Week', icon: UnpublishedOutlined },
+    { id: 'delete-week', label: 'Delete This Week', icon: Delete },
+    { id: 'download-schedule', label: 'Download Schedule', icon: Download },
+    { id: 'import-schedule', label: 'Import Schedule', icon: Upload },
+  ];
 
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [isAddShiftOpen, setIsAddShiftOpen] = useState(false);
@@ -61,11 +95,6 @@ const Schedule: React.FC<ScheduleProps> = () => {
     setCurrentWeekStart(newDate);
   };
 
-  const filteredSites = SiteData.filter(site =>
-    site.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    site.customerName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   // Helper function to get shifts for site and date
   const getSiteShifts = (siteId: string, date: Date): Shift[] => {
     const dateStr = date.toISOString().split('T')[0];
@@ -80,6 +109,27 @@ const Schedule: React.FC<ScheduleProps> = () => {
 
     return [...siteShifts, ...userShifts];
   };
+
+  // Helper function to check if a site has any assigned staff in the current week
+  const siteHasAssignedStaff = (site: SiteMember): boolean => {
+    return weekDates.some(date => {
+      const shifts = getSiteShifts(site.id, date);
+      return shifts.some(shift => shift.assignedStaff.length > 0);
+    });
+  };
+
+  const filteredSites = SiteData.filter(site => {
+    // First filter by search term
+    const matchesSearch = site.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // If showScheduledSites is checked, only show sites with assigned staff
+    if (showScheduledSites) {
+      return matchesSearch && siteHasAssignedStaff(site);
+    }
+
+    // Otherwise show all sites that match search
+    return matchesSearch;
+  });
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
@@ -168,6 +218,105 @@ const Schedule: React.FC<ScheduleProps> = () => {
     setSelectedSiteForShift(null);
   };
 
+  const handleShiftMenuClick = (item: ShiftMenuItem, shift: Shift) => {
+    console.log('Menu item clicked:', item.action, 'for shift:', shift.id);
+
+    switch (item.action) {
+      case 'repeat-daily':
+        console.log('Repeat shift daily');
+        break;
+      case 'repeat-weekly':
+        console.log('Repeat shift weekly');
+        break;
+      case 'repeat-specific':
+        console.log('Repeat shift on specific dates');
+        break;
+      case 'repeat-staff':
+        console.log('Repeat shift with staff');
+        break;
+      case 'publish':
+        console.log('Publish shift');
+        break;
+      case 'unpublish':
+        console.log('Unpublish shift');
+        break;
+      case 'delete':
+        console.log('Delete shift');
+        break;
+      case 'archive':
+        console.log('Archive shift');
+        break;
+      default:
+        console.log('Unknown action:', item.action);
+    }
+  };
+
+  const handleCellMenuClick = (item: ShiftMenuItem, siteId: string, date: Date) => {
+    console.log('Cell menu item clicked:', item.action, 'for site:', siteId, 'date:', date.toISOString().split('T')[0]);
+
+    switch (item.action) {
+      case 'copy-yesterday':
+        console.log('Copy yesterday shifts');
+        break;
+      case 'copy-last-tue':
+        console.log('Copy last Tuesday shifts');
+        break;
+      case 'publish-day':
+        console.log('Publish this day');
+        break;
+      case 'unpublish-day':
+        console.log('Unpublish this day');
+        break;
+      case 'delete-day':
+        console.log('Delete this day');
+        break;
+      default:
+        console.log('Unknown action:', item.action);
+    }
+  };
+
+  const handleActionMenuClick = (actionId: string) => {
+    console.log('Action clicked:', actionId);
+
+    switch (actionId) {
+      case 'time-analysis':
+        console.log('Show Time Analysis');
+        break;
+      case 'shift-analysis':
+        console.log('Show Shift Analysis');
+        break;
+      case 'staff-analysis':
+        console.log('Show Staff Analysis');
+        break;
+      case 'duty-analysis':
+        console.log('Show Start Duty Analysis');
+        break;
+      case 'copy-last-week':
+        console.log('Copy Last Week');
+        break;
+      case 'publish-week':
+        console.log('Publish This Week');
+        break;
+      case 'unpublish-week':
+        console.log('Unpublish This Week');
+        break;
+      case 'delete-week':
+        console.log('Delete This Week');
+        break;
+      case 'download-schedule':
+        console.log('Download Schedule');
+        break;
+      case 'import-schedule':
+        console.log('Import Schedule');
+        break;
+      default:
+        console.log('Unknown action:', actionId);
+    }
+
+    // Close drawer after action
+    setIsActionDrawerOpen(false);
+  };
+
   // If staff view is enabled, render StaffView component
   if (staffView) {
     return (
@@ -250,13 +399,32 @@ const Schedule: React.FC<ScheduleProps> = () => {
             </Typography>
           </Box>
 
-          <Typography variant="body2" sx={{
-            color: 'var(--clr-text-secondary)',
-            cursor: 'pointer',
-            '&:hover': { color: 'var(--clr-purple)' }
-          }}>
-            Action
-          </Typography>
+          <Box
+            onClick={() => setIsActionDrawerOpen(true)}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5,
+              cursor: 'pointer',
+              px: 1,
+              py: 0.5,
+              borderRadius: 1,
+              '&:hover': {
+                backgroundColor: 'var(--clr-bg-light)',
+              },
+            }}
+          >
+            <Typography variant="body2" sx={{
+              color: 'var(--clr-text-secondary)',
+              '&:hover': { color: 'var(--clr-purple)' }
+            }}>
+              Action
+            </Typography>
+            <KeyboardArrowDown sx={{
+              fontSize: '16px',
+              color: 'var(--clr-text-secondary)'
+            }} />
+          </Box>
         </Box>
       </Box>
 
@@ -456,6 +624,38 @@ const Schedule: React.FC<ScheduleProps> = () => {
                     <Add sx={{ fontSize: '14px' }} />
                   </IconButton>
 
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 4,
+                      left: 4,
+                    }}
+                  >
+                    <DropdownMenu
+                      menuItems={shiftMenuData.cellMenu}
+                      onItemClick={(item) => handleCellMenuClick(item, site.id, date)}
+                      placement="bottom-start"
+                      activationMode="click"
+                      trigger={
+                        <IconButton
+                          size="small"
+                          sx={{
+                            width: 20,
+                            height: 20,
+                            backgroundColor: 'var(--clr-bg-light)',
+                            color: 'var(--clr-text-tertiary)',
+                            '&:hover': {
+                              backgroundColor: 'var(--clr-purple)',
+                              color: 'var(--clr-white)',
+                            },
+                          }}
+                        >
+                          <MoreVert sx={{ fontSize: '14px' }} />
+                        </IconButton>
+                      }
+                    />
+                  </Box>
+
                   <Box sx={{ mt: 3, flex: 1 }}>
                     {shifts.map((shift) => (
                       <Box
@@ -467,25 +667,52 @@ const Schedule: React.FC<ScheduleProps> = () => {
                           backgroundColor: shift.color + '20',
                           border: `1px solid ${shift.color}`,
                           cursor: 'pointer',
+                          position: 'relative',
+                          '&:hover .shift-dropdown': {
+                            opacity: 1
+                          }
                         }}
                       >
-                        <Typography variant="caption" sx={{
-                          color: shift.color,
-                          fontSize: '10px',
-                          fontWeight: 600,
-                          display: 'block'
+                        <Box sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'flex-start'
                         }}>
-                          {shift.startTime} - {shift.endTime}
-                        </Typography>
-                        {shift.assignedStaffNames.length > 0 && (
-                          <Typography variant="caption" sx={{
-                            color: shift.color,
-                            fontSize: '9px',
-                            display: 'block'
-                          }}>
-                            {shift.assignedStaffNames.join(', ')}
-                          </Typography>
-                        )}
+                          <Box sx={{ flex: 1 }}>
+                            <Typography variant="caption" sx={{
+                              color: shift.color,
+                              fontSize: '10px',
+                              fontWeight: 600,
+                              display: 'block'
+                            }}>
+                              {shift.startTime} - {shift.endTime}
+                            </Typography>
+                            {shift.assignedStaffNames.length > 0 && (
+                              <Typography variant="caption" sx={{
+                                color: shift.color,
+                                fontSize: '9px',
+                                display: 'block'
+                              }}>
+                                {shift.assignedStaffNames.join(', ')}
+                              </Typography>
+                            )}
+                          </Box>
+
+                          <Box
+                            className="shift-dropdown"
+                            sx={{
+                              opacity: 0,
+                              transition: 'opacity 0.2s ease',
+                              ml: 1
+                            }}
+                          >
+                            <DropdownMenu
+                              menuItems={shiftMenuData.default}
+                              onItemClick={(item) => handleShiftMenuClick(item, shift)}
+                              placement="right-start"
+                            />
+                          </Box>
+                        </Box>
                       </Box>
                     ))}
                   </Box>
@@ -631,6 +858,82 @@ const Schedule: React.FC<ScheduleProps> = () => {
         selectedDate={selectedDateForShift}
         selectedSite={selectedSiteForShift}
       />
+
+      {/* Action Drawer */}
+      <Drawer
+        anchor="right"
+        open={isActionDrawerOpen}
+        onClose={() => setIsActionDrawerOpen(false)}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: 320,
+            backgroundColor: 'var(--clr-white)',
+            borderLeft: '1px solid var(--clr-border-light)',
+          },
+        }}
+      >
+        <Box sx={{ p: 3 }}>
+          <Typography variant="h6" sx={{
+            fontWeight: 600,
+            color: 'var(--clr-text-primary)',
+            mb: 3
+          }}>
+            Actions
+          </Typography>
+
+          <List sx={{ p: 0 }}>
+            {actionMenuItems.map((item) => {
+              const IconComponent = item.icon;
+              const isDangerous = item.id === 'delete-week';
+
+              return (
+                <Fragment key={item.id}>
+                  <ListItem
+                    onClick={() => handleActionMenuClick(item.id)}
+                    sx={{
+                      cursor: 'pointer',
+                      borderRadius: 1,
+                      mb: 1,
+                      px: 2,
+                      py: 1.5,
+                      '&:hover': {
+                        backgroundColor: isDangerous ? 'var(--clr-error-light)' : 'var(--clr-bg-light)',
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 40 }}>
+                      <IconComponent sx={{
+                        fontSize: '20px',
+                        color: isDangerous ? 'var(--clr-error)' : 'var(--clr-text-secondary)'
+                      }} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.label}
+                      sx={{
+                        '& .MuiListItemText-primary': {
+                          fontSize: '14px',
+                          fontWeight: 500,
+                          color: isDangerous ? 'var(--clr-error)' : 'var(--clr-text-primary)',
+                        },
+                      }}
+                    />
+                  </ListItem>
+
+                  {/* Add divider after Copy Last Week */}
+                  {item.id === 'copy-last-week' && (
+                    <Divider sx={{ my: 1, backgroundColor: 'var(--clr-border-light)' }} />
+                  )}
+
+                  {/* Add divider after Delete This Week */}
+                  {item.id === 'delete-week' && (
+                    <Divider sx={{ my: 1, backgroundColor: 'var(--clr-border-light)' }} />
+                  )}
+                </Fragment>
+              );
+            })}
+          </List>
+        </Box>
+      </Drawer>
     </Box>
   );
 };

@@ -91,9 +91,9 @@ const SiteRecords: React.FC<SiteRecordsProps> = ({ site, sites, onSitesUpdate })
     { label: 'Licence', icon: <LicenceIcon />, value: 5 },
     { label: 'Tours', icon: <ToursIcon />, value: 6 },
     { label: 'Checkpoints', icon: <CheckpointsIcon />, value: 7 },
-    { label: 'Settings', value: 8 },
-    { label: 'Visitors', value: 9 },
-    { label: 'Rates', value: 10 },
+    // { label: 'Settings', value: 8 },
+    { label: 'Visitors', value: 8 },
+    { label: 'Rates', value: 9 },
   ];
 
   const renderTabContent = () => {
@@ -142,22 +142,11 @@ const SiteRecords: React.FC<SiteRecordsProps> = ({ site, sites, onSitesUpdate })
         );
       case 8:
         return (
-          <Box sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ color: 'var(--clr-text-secondary)' }}>
-             setting 
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              Setting functionality will be implemented here
-            </Typography>
-          </Box>
-        );
-      case 9:
-        return (
           <Box>
             <Visitors />
           </Box>
         );
-      case 10:
+      case 9:
         return (
           <Rate siteId={site?.id} />
         );

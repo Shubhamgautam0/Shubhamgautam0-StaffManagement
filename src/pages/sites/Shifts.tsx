@@ -47,7 +47,7 @@ const Shifts: React.FC<ShiftsProps> = ({ selectedSite, sites: propSites, onSites
     const getShiftsForDate = (date: Date, site: SiteMember | null): Shift[] => {
     if (!site || !site.shifts) return [];
     const dateString = date.toISOString().split('T')[0];
-    return site.shifts.filter(shift => shift.date === dateString);
+    return site.shifts[dateString] || [];
   };
 
   const shiftsForSelectedDate = getShiftsForDate(selectedDate, currentSite);

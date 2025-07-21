@@ -76,21 +76,60 @@ export interface CheckpointTour {
   createdDate: string;
 }
 
+export interface SiteRate {
+  id: string;
+  position: string;
+  regularRate: number;
+  overtimeRate: number;
+  holidayRate: number;
+  nightShiftRate: number;
+  weekendRate: number;
+  effectiveDate: string;
+}
+
+export interface SiteCustomer {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+}
+
+export interface SiteManager {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  position: string;
+}
+
+export interface ShiftMenuItem {
+  id: string;
+  label: string;
+  action: string;
+  color?: string;
+  subMenu?: ShiftMenuItem[];
+}
+
+export interface ShiftMenuData {
+  [key: string]: ShiftMenuItem[];
+}
+
 
 
 export interface SiteMember {
   id: string;
   name: string;
-  customerName: string;
-  initials: string;
-  phone: string;
-  email: string;
+  customerName?: string;
+  initials?: string;
+  phone?: string;
+  email?: string;
   address: string;
-  siteId: string;
-  status: 'Mysite' | 'Allsite';
+  siteId?: string;
+  status?: 'Mysite' | 'Allsite';
   version?: string;
   avatar?: string;
-  scheduleDate: string;
+  scheduleDate?: string;
   employeeId?: string;
   username?: string;
   unitNumber?: string;
@@ -101,6 +140,12 @@ export interface SiteMember {
   checkpoints?: SiteCheckpoint[];
   checkpointTours?: CheckpointTour[];
   rateSetting?: 'Company Setting' | 'Custom Setting';
+  // New fields for AddSiteForm
+  areaTags?: string[];
+  enforceGeofence?: boolean;
+  customer?: SiteCustomer;
+  assignedManager?: SiteManager;
+  createdDate?: string;
 }
 
 export const SiteData: SiteMember[] = [
@@ -830,5 +875,203 @@ export const updateSiteCheckpointTour = (siteId: string, tourId: string, updates
   }
 
   return false;
+};
+
+// Customer data storage
+export const CustomerData: SiteCustomer[] = [
+  {
+    id: '1',
+    name: 'Ambar Singh',
+    email: 'ambar.singh@company.com',
+    phone: '9887654321',
+    address: '123 Business Ave, New York, NY 10001'
+  },
+  {
+    id: '2',
+    name: 'Maryo',
+    email: 'maryo@enterprise.com',
+    phone: '818720285',
+    address: '456 Corporate Blvd, Los Angeles, CA 90210'
+  },
+  {
+    id: '3',
+    name: 'Mimi Kotb',
+    email: 'mimi.kotb@corporation.com',
+    phone: '720-2855',
+    address: '789 Industry St, Chicago, IL 60601'
+  },
+  {
+    id: '4',
+    name: 'OA',
+    email: 'oa@business.com',
+    phone: '+1 (555) 456-7890',
+    address: '321 Commerce Dr, Houston, TX 77001'
+  }
+];
+
+// Customer Management Functions
+
+// Add new customer
+export const addCustomer = (customerData: Omit<SiteCustomer, 'id'>): SiteCustomer => {
+  const newCustomer: SiteCustomer = {
+    ...customerData,
+    id: Date.now().toString()
+  };
+
+  CustomerData.push(newCustomer);
+  return newCustomer;
+};
+
+// Get all customers
+export const getAllCustomers = (): SiteCustomer[] => {
+  return CustomerData;
+};
+
+// Get customer by ID
+export const getCustomerById = (customerId: string): SiteCustomer | undefined => {
+  return CustomerData.find(customer => customer.id === customerId);
+};
+
+// Shift Menu Data
+export const shiftMenuData: ShiftMenuData = {
+  default: [
+    {
+      id: 'repeat-shift',
+      label: 'Repeat Shift',
+      action: 'repeat',
+      subMenu: [
+        {
+          id: 'daily',
+          label: 'Daily',
+          action: 'repeat-daily'
+        },
+        {
+          id: 'weekly',
+          label: 'Weekly',
+          action: 'repeat-weekly'
+        },
+        {
+          id: 'specific-dates',
+          label: 'Specific Dates',
+          action: 'repeat-specific'
+        }
+      ]
+    },
+    {
+      id: 'repeat-shift-staff',
+      label: 'Repeat Shift + Staff',
+      action: 'repeat-staff'
+    },
+    {
+      id: 'publish-shift',
+      label: 'Publish Shift',
+      action: 'publish'
+    },
+    {
+      id: 'unpublish-shift',
+      label: 'Unpublish Shift',
+      action: 'unpublish'
+    },
+    {
+      id: 'delete-shift',
+      label: 'Delete Shift',
+      action: 'delete',
+      color: '#ff4444'
+    },
+    {
+      id: 'archive-shift',
+      label: 'Archive Shift',
+      action: 'archive'
+    }
+  ],
+  cellMenu: [
+    {
+      id: 'copy-yesterday',
+      label: 'Copy Yesterday',
+      action: 'copy-yesterday'
+    },
+    {
+      id: 'copy-last-tue',
+      label: 'Copy Last Tue',
+      action: 'copy-last-tue'
+    },
+    {
+      id: 'publish-this-day',
+      label: 'Publish This Day',
+      action: 'publish-day'
+    },
+    {
+      id: 'unpublish-this-day',
+      label: 'Unpublish This Day',
+      action: 'unpublish-day'
+    },
+    {
+      id: 'delete-this-day',
+      label: 'Delete This Day',
+      action: 'delete-day',
+      color: '#ff4444'
+    }
+  ],
+  staffShiftMenu: [
+    {
+      id: 'duplicate',
+      label: 'Duplicate',
+      action: 'duplicate'
+    },
+    {
+      id: 'publish-shift',
+      label: 'Publish Shift',
+      action: 'publish'
+    },
+    {
+      id: 'unpublish-shift',
+      label: 'Unpublish Shift',
+      action: 'unpublish'
+    },
+    {
+      id: 'delete-staff',
+      label: 'Delete Staff',
+      action: 'delete-staff',
+      color: '#ff4444'
+    },
+    {
+      id: 'repeat-shift',
+      label: 'Repeat Shift',
+      action: 'repeat',
+      subMenu: [
+        {
+          id: 'daily',
+          label: 'Daily',
+          action: 'repeat-daily'
+        },
+        {
+          id: 'weekly',
+          label: 'Weekly',
+          action: 'repeat-weekly'
+        },
+        {
+          id: 'specific-dates',
+          label: 'Specific Dates',
+          action: 'repeat-specific'
+        }
+      ]
+    },
+    {
+      id: 'archive-shift',
+      label: 'Archive Shift',
+      action: 'archive'
+    }
+  ]
+};
+
+// Add new site
+export const addSite = (siteData: Omit<SiteMember, 'id'>): boolean => {
+  const newSite: SiteMember = {
+    ...siteData,
+    id: Date.now().toString()
+  };
+
+  SiteData.push(newSite);
+  return true;
 };
 

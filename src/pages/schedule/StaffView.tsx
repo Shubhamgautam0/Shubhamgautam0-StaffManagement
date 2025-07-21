@@ -13,11 +13,13 @@ import {
   ChevronRight,
   Close,
   Add,
+  MoreVert,
 } from '@mui/icons-material';
 import { staffData, type StaffMember, getStaffById } from '../../data/staffData';
 import { getStaffShifts, getUnassignedShifts, type StaffShiftInfo, assignStaffToShift } from '../../data/dataManager';
 import AddShiftDrawer from '../../components/shifts/AddShiftDrawer';
-import { type Shift, addShiftToSite } from '../../data/siteData';
+import { type Shift, addShiftToSite, shiftMenuData, type ShiftMenuItem } from '../../data/siteData';
+import DropdownMenu from '../../components/common/DropdownMenu';
 
 interface StaffViewProps {
   currentWeekStart: Date;
@@ -43,6 +45,65 @@ const StaffView: React.FC<StaffViewProps> = ({ currentWeekStart, onNavigateWeek,
       setRefreshKey(prev => prev + 1);
     } else {
       console.error('Failed to add shift');
+    }
+  };
+
+  // Handle staff shift menu actions
+  const handleStaffShiftMenuClick = (item: ShiftMenuItem, shift: StaffShiftInfo, staffId: string) => {
+    console.log('Staff shift menu item clicked:', item.action, 'for shift:', shift.shiftId, 'staff:', staffId);
+
+    switch (item.action) {
+      case 'duplicate':
+        console.log('Duplicate shift');
+        break;
+      case 'publish':
+        console.log('Publish shift');
+        break;
+      case 'unpublish':
+        console.log('Unpublish shift');
+        break;
+      case 'delete-staff':
+        console.log('Delete staff from shift');
+        break;
+      case 'repeat-daily':
+        console.log('Repeat shift daily');
+        break;
+      case 'repeat-weekly':
+        console.log('Repeat shift weekly');
+        break;
+      case 'repeat-specific':
+        console.log('Repeat shift on specific dates');
+        break;
+      case 'archive':
+        console.log('Archive shift');
+        break;
+      default:
+        console.log('Unknown action:', item.action);
+    }
+  };
+
+  // Handle cell menu actions for staff view
+  const handleStaffCellMenuClick = (item: ShiftMenuItem, staffId: string, date: Date) => {
+    console.log('Staff cell menu item clicked:', item.action, 'for staff:', staffId, 'date:', date.toISOString().split('T')[0]);
+
+    switch (item.action) {
+      case 'copy-yesterday':
+        console.log('Copy yesterday shifts for staff');
+        break;
+      case 'copy-last-tue':
+        console.log('Copy last Tuesday shifts for staff');
+        break;
+      case 'publish-day':
+        console.log('Publish this day for staff');
+        break;
+      case 'unpublish-day':
+        console.log('Unpublish this day for staff');
+        break;
+      case 'delete-day':
+        console.log('Delete this day for staff');
+        break;
+      default:
+        console.log('Unknown action:', item.action);
     }
   };
 
@@ -309,35 +370,70 @@ const StaffView: React.FC<StaffViewProps> = ({ currentWeekStart, onNavigateWeek,
                   justifyContent: 'flex-start'
                 }}
               >
-                {unassignedShifts.map((shift) => (
-                  <Box
-                    key={shift.id}
-                    sx={{
-                      mb: 1,
-                      p: 1,
-                      borderRadius: 1,
-                      backgroundColor: '#ffcdd2',
-                      border: '1px solid #f44336',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <Typography variant="caption" sx={{
-                      color: '#d32f2f',
-                      fontSize: '10px',
-                      fontWeight: 600,
-                      display: 'block'
-                    }}>
-                      {shift.startTime} - {shift.endTime}
-                    </Typography>
-                    <Typography variant="caption" sx={{
-                      color: '#d32f2f',
-                      fontSize: '9px',
-                      display: 'block'
-                    }}>
-                      {shift.siteName}
-                    </Typography>
-                  </Box>
-                ))}
+                {/* Cell Menu Icon for Unassigned Shifts */}
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 4,
+                    left: 4,
+                  }}
+                >
+                  <DropdownMenu
+                    menuItems={shiftMenuData.cellMenu}
+                    onItemClick={(item) => handleStaffCellMenuClick(item, 'unassigned', date)}
+                    placement="bottom-start"
+                    activationMode="click"
+                    trigger={
+                      <IconButton
+                        size="small"
+                        sx={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: 'rgba(255,255,255,0.8)',
+                          color: '#d32f2f',
+                          '&:hover': {
+                            backgroundColor: '#d32f2f',
+                            color: 'white',
+                          },
+                        }}
+                      >
+                        <MoreVert sx={{ fontSize: '14px' }} />
+                      </IconButton>
+                    }
+                  />
+                </Box>
+
+                <Box sx={{ mt: 3, flex: 1 }}>
+                  {unassignedShifts.map((shift) => (
+                    <Box
+                      key={shift.id}
+                      sx={{
+                        mb: 1,
+                        p: 1,
+                        borderRadius: 1,
+                        backgroundColor: '#ffcdd2',
+                        border: '1px solid #f44336',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <Typography variant="caption" sx={{
+                        color: '#d32f2f',
+                        fontSize: '10px',
+                        fontWeight: 600,
+                        display: 'block'
+                      }}>
+                        {shift.startTime} - {shift.endTime}
+                      </Typography>
+                      <Typography variant="caption" sx={{
+                        color: '#d32f2f',
+                        fontSize: '9px',
+                        display: 'block'
+                      }}>
+                        {shift.siteName}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
               </Box>
             );
           })}
@@ -434,6 +530,39 @@ const StaffView: React.FC<StaffViewProps> = ({ currentWeekStart, onNavigateWeek,
                     <Add sx={{ fontSize: '14px' }} />
                   </IconButton>
 
+                  {/* Cell Menu Icon */}
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 4,
+                      left: 4,
+                    }}
+                  >
+                    <DropdownMenu
+                      menuItems={shiftMenuData.cellMenu}
+                      onItemClick={(item) => handleStaffCellMenuClick(item, staff.id, date)}
+                      placement="bottom-start"
+                      activationMode="click"
+                      trigger={
+                        <IconButton
+                          size="small"
+                          sx={{
+                            width: 20,
+                            height: 20,
+                            backgroundColor: 'var(--clr-bg-light)',
+                            color: 'var(--clr-text-tertiary)',
+                            '&:hover': {
+                              backgroundColor: 'var(--clr-purple)',
+                              color: 'var(--clr-white)',
+                            },
+                          }}
+                        >
+                          <MoreVert sx={{ fontSize: '14px' }} />
+                        </IconButton>
+                      }
+                    />
+                  </Box>
+
                   <Box sx={{ mt: 3, flex: 1 }}>
                     {shifts.length > 0 ? (
                       shifts.map((shift) => (
@@ -446,23 +575,50 @@ const StaffView: React.FC<StaffViewProps> = ({ currentWeekStart, onNavigateWeek,
                             backgroundColor: (staff.color || '#2196F3') + '20',
                             border: `1px solid ${staff.color || '#2196F3'}`,
                             cursor: 'pointer',
+                            position: 'relative',
+                            '&:hover .shift-dropdown': {
+                              opacity: 1
+                            }
                           }}
                         >
-                          <Typography variant="caption" sx={{
-                            color: staff.color || '#2196F3',
-                            fontSize: '10px',
-                            fontWeight: 600,
-                            display: 'block'
+                          <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start'
                           }}>
-                            {shift.startTime} - {shift.endTime}
-                          </Typography>
-                          <Typography variant="caption" sx={{
-                            color: staff.color || '#2196F3',
-                            fontSize: '9px',
-                            display: 'block'
-                          }}>
-                            {shift.siteName}
-                          </Typography>
+                            <Box sx={{ flex: 1 }}>
+                              <Typography variant="caption" sx={{
+                                color: staff.color || '#2196F3',
+                                fontSize: '10px',
+                                fontWeight: 600,
+                                display: 'block'
+                              }}>
+                                {shift.startTime} - {shift.endTime}
+                              </Typography>
+                              <Typography variant="caption" sx={{
+                                color: staff.color || '#2196F3',
+                                fontSize: '9px',
+                                display: 'block'
+                              }}>
+                                {shift.siteName}
+                              </Typography>
+                            </Box>
+
+                            <Box
+                              className="shift-dropdown"
+                              sx={{
+                                opacity: 0,
+                                transition: 'opacity 0.2s ease',
+                                ml: 1
+                              }}
+                            >
+                              <DropdownMenu
+                                menuItems={shiftMenuData.staffShiftMenu}
+                                onItemClick={(item) => handleStaffShiftMenuClick(item, shift, staff.id)}
+                                placement="right-start"
+                              />
+                            </Box>
+                          </Box>
                         </Box>
                       ))
                     ) : (

@@ -5,8 +5,6 @@ import {
   Tab,
   Typography,
   Paper,
-  Select,
-  MenuItem,
 } from '@mui/material';
 import {
   Assignment,
@@ -17,7 +15,6 @@ import {
   Settings,
 } from '@mui/icons-material';
 import type { StaffMember } from '../../data/staffData';
-import Calendar from './Calender';
 import Availability from './Availability';
 import Licence_Certification from './Licence_Certification';
 import Timesheet from './Timesheet';
@@ -46,12 +43,9 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
     { id: 3, label: 'Availability', icon: Visibility },
     { id: 4, label: 'Licence & Certification', icon: Security },
     { id: 5, label: 'Duty Settings', icon: Settings },
-    { id: 6, label: 'Staff Information' },
-    { id: 7, label: 'More' },
-    
+    { id: 6, label: 'Staff Information' },    
   ];
 
-  // Staff will always be available now due to auto-selection
   if (!staff) {
     return null;
   }
@@ -150,17 +144,6 @@ const StaffRecords: React.FC<StaffRecordsProps> = ({ staff }) => {
           <Box sx={{ p: 3, textAlign: 'center' }}>
             <Typography variant="body1" sx={{ color: 'var(--clr-text-secondary)' }}>
               No staff selected
-            </Typography>
-          </Box>
-        );
-      case 7:
-        return (
-        <Box className="staff-records-empty">
-            <Typography variant="h6" className="staff-records-empty-title">
-              More Options
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Additional options and settings will be displayed here
             </Typography>
           </Box>
         );

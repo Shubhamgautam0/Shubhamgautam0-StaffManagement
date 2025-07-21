@@ -7,17 +7,116 @@
   color: #000000;
   background-color: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  width: 100vw; 
+  width: 100vw;
   height: 64px;
   box-sizing: border-box;
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 1100; 
+  z-index: 1100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-tabs-container {
+  display: flex;
+  align-items: center;
+}
+
+.header-tabs {
+  min-height: 48px;
+}
+
+.header-menu-button {
+  color: var(--clr-text-secondary, #666) !important;
+}
+
+.header-avatar {
+  width: 32px !important;
+  height: 32px !important;
+  background-color: var(--clr-purple, #6366f1) !important;
+}
+
+.header-user-name {
+  color: var(--clr-text-primary, #000) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-icon-button {
+  color: var(--clr-text-secondary, #666) !important;
+  padding: 6px !important;
+}
+
+.header-icon-button:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.header-tab-icon {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}
+
+.header-tab {
+  min-height: 48px !important;
+  text-transform: none !important;
+}
+
+.header-user-section {
+  transition: background-color 0.2s ease !important;
+}
+
+.user-menu-item {
+  padding: 8px 16px !important;
+  min-height: 40px !important;
+}
+
+.user-menu-item:hover {
+  background-color: var(--clr-bg-light, #f8f9fa) !important;
+}
+
+.user-menu-item .MuiListItemIcon-root {
+  min-width: 36px !important;
 }
 
 @media screen and (max-width: 768px) {
-  .header-tabs-container{
-    display: none
+  .header-tabs-container {
+    display: none;
+  }
+
+  .header-container {
+    padding: 8px 16px;
+  }
+
+  .header-tab-icon {
+    display: none;
+  }
+
+  .header-user-section {
+    padding: 4px !important;
+  }
+}
+
+/* Hide tab icons on medium screens but keep tabs visible */
+@media screen and (max-width: 1024px) {
+  .header-tab-icon {
+    display: none;
   }
 }

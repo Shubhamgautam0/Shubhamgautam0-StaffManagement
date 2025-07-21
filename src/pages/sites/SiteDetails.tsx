@@ -81,24 +81,49 @@ const SiteDetails: React.FC<SiteDetailsProps> = ({ site, onEditClick }) => {
 
         {/* Site Information */}
         <Box className="staff-details-contact">
-          <Box className="staff-details-contact-item">
-            <Person className='staff-details-contact-icon' />
-            <Typography variant="body2" color="text.secondary" >
-              {site.customerName}
-            </Typography>
-          </Box>
-          <Box className="staff-details-contact-item">
-            <Phone className="staff-details-contact-icon" />
-            <Typography variant="body2" color="text.secondary">
-              {site.phone || 'Phone not available'}
-            </Typography>
-          </Box>
-          <Box className="staff-details-contact-item">
-            <Email className="staff-details-contact-icon" />
-            <Typography variant="body2" color="text.secondary" >
-             {site.email}
-            </Typography>
-          </Box>
+          {site.customer ? (
+            <>
+              <Box className="staff-details-contact-item">
+                <Person className='staff-details-contact-icon' />
+                <Typography variant="body2" color="text.secondary" >
+                  {site.customer.name}
+                </Typography>
+              </Box>
+              <Box className="staff-details-contact-item">
+                <Phone className="staff-details-contact-icon" />
+                <Typography variant="body2" color="text.secondary">
+                  {site.customer.phone || 'Phone not available'}
+                </Typography>
+              </Box>
+              <Box className="staff-details-contact-item">
+                <Email className="staff-details-contact-icon" />
+                <Typography variant="body2" color="text.secondary" >
+                  {site.customer.email || 'Email not available'}
+                </Typography>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Box className="staff-details-contact-item">
+                <Person className='staff-details-contact-icon' />
+                <Typography variant="body2" color="text.secondary" >
+                  {site.customerName || 'No customer assigned'}
+                </Typography>
+              </Box>
+              <Box className="staff-details-contact-item">
+                <Phone className="staff-details-contact-icon" />
+                <Typography variant="body2" color="text.secondary">
+                  {site.phone || 'Phone not available'}
+                </Typography>
+              </Box>
+              <Box className="staff-details-contact-item">
+                <Email className="staff-details-contact-icon" />
+                <Typography variant="body2" color="text.secondary" >
+                  {site.email || 'Email not available'}
+                </Typography>
+              </Box>
+            </>
+          )}
         </Box>
 
         {/* Area Tags */}
@@ -106,11 +131,32 @@ const SiteDetails: React.FC<SiteDetailsProps> = ({ site, onEditClick }) => {
           <Typography variant="body2" color="text.secondary" className="staff-details-area-label">
             Area Tags:
           </Typography>
-          <input
-            type="text"
-            className="staff-details-area-input"
-            placeholder="Enter area tags"
-          />
+          {site.areaTags && site.areaTags.length > 0 ? (
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+              {site.areaTags.map((tag, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    backgroundColor: '#f0f0f0',
+                    borderRadius: 1,
+                    px: 1,
+                    py: 0.5,
+                    fontSize: '0.75rem',
+                    color: '#666'
+                  }}
+                >
+                  {tag}
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <input
+              type="text"
+              className="staff-details-area-input"
+              placeholder="No area tags"
+              disabled
+            />
+          )}
         </Box>
       </Box>
 

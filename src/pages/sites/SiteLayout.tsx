@@ -4,13 +4,19 @@ import { Box, Paper, Grid, Fab, Tooltip, Zoom } from '@mui/material';
 import SiteList from './SiteList';
 import SiteDetails from './SiteDetails';
 import SiteRecords from './SiteRecords';
-import { SiteData, type SiteMember } from '../../data/siteData';
+import AddSiteForm from './AddSiteForm';
+import SiteInvoice from './siteInvoice';
+import AddMobileCarForm from '../../components/forms/AddMobileCarForm';
+import { SiteData, type SiteMember, addSite } from '../../data/siteData';
 import { Add, CarCrashOutlined, LocationCity, Map } from '@mui/icons-material';
 
 const SiteLayout: React.FC = () => {
   const [sites, setSites] = useState<SiteMember[]>(SiteData);
   const [selectedSite, setSelectedSite] = useState<SiteMember | null>(null);
   const [fabHovered, setFabHovered] = useState(false);
+  const [showAddSiteForm, setShowAddSiteForm] = useState(false);
+  const [showSiteInvoice, setShowSiteInvoice] = useState(false);
+  const [showAddMobileCarForm, setShowAddMobileCarForm] = useState(false);
 
   useEffect(() => {
     if (sites.length > 0 && !selectedSite) {
@@ -32,6 +38,48 @@ const SiteLayout: React.FC = () => {
     setSelectedSite(updatedSite);
   };
 
+  const handleAddSite = () => {
+    setShowAddSiteForm(true);
+  };
+
+  const handleSaveSite = (siteData: any) => {
+    const success = addSite(siteData);
+    if (success) {
+      // Refresh sites list
+      setSites([...SiteData]);
+      setShowAddSiteForm(false);
+      // Select the newly added site
+      const newSite = SiteData[SiteData.length - 1];
+      setSelectedSite(newSite);
+    }
+  };
+
+  const handleCancelAddSite = () => {
+    setShowAddSiteForm(false);
+  };
+
+  const handleSiteInvoice = () => {
+    setShowSiteInvoice(true);
+  };
+
+  const handleCloseSiteInvoice = () => {
+    setShowSiteInvoice(false);
+  };
+
+  const handleAddMobileCar = () => {
+    setShowAddMobileCarForm(true);
+  };
+
+  const handleSaveMobileCar = (mobileCarData: any) => {
+    console.log('Mobile car data:', mobileCarData);
+    // Here you would typically save the mobile car data to your backend
+    setShowAddMobileCarForm(false);
+  };
+
+  const handleCancelAddMobileCar = () => {
+    setShowAddMobileCarForm(false);
+  };
+
   return (
     <Box className="page-container sites-page">
       <Grid container spacing={2} className="grid-container" >
@@ -42,38 +90,52 @@ const SiteLayout: React.FC = () => {
         </Grid>
 
         <Grid size={{ xs: 12, md: 8 }} className="grid-item">
-          <Grid container spacing={2} sx={{
-            height: '100%',
-            width: '100%',
-            flexDirection: 'column',
-            flexWrap: 'nowrap',
-            margin: 0,
-            overflow: 'hidden'
-          }}>
-            {/* Site Details */}
-            <Grid size={12} sx={{
-              height: '50%',
-              minHeight: 0,
-              flex: '1 1 50%',
+          {showAddSiteForm ? (
+            <Paper className="paper-container">
+              <AddSiteForm onSave={handleSaveSite} onCancel={handleCancelAddSite} />
+            </Paper>
+          ) : showSiteInvoice ? (
+            <Paper className="paper-container">
+              <SiteInvoice onClose={handleCloseSiteInvoice} />
+            </Paper>
+          ) : showAddMobileCarForm ? (
+            <Paper className="paper-container">
+              <AddMobileCarForm onSave={handleSaveMobileCar} onCancel={handleCancelAddMobileCar} />
+            </Paper>
+          ) : (
+            <Grid container spacing={2} sx={{
+              height: '100%',
+              width: '100%',
+              flexDirection: 'column',
+              flexWrap: 'nowrap',
+              margin: 0,
               overflow: 'hidden'
             }}>
-              <Paper className="paper-container">
-                <SiteDetails site={selectedSite} />
-              </Paper>
-            </Grid>
+              {/* Site Details */}
+              <Grid size={12} sx={{
+                height: '50%',
+                minHeight: 0,
+                flex: '1 1 50%',
+                overflow: 'hidden'
+              }}>
+                <Paper className="paper-container">
+                  <SiteDetails site={selectedSite} />
+                </Paper>
+              </Grid>
 
-            {/* Site Records */}
-            <Grid size={12} sx={{
-              height: '50%',
-              minHeight: 0,
-              flex: '1 1 50%',
-              overflow: 'hidden'
-            }}>
-              <Paper className="paper-container">
-                <SiteRecords site={selectedSite} sites={sites} onSitesUpdate={setSites} />
-              </Paper>
+              {/* Site Records */}
+              <Grid size={12} sx={{
+                height: '50%',
+                minHeight: 0,
+                flex: '1 1 50%',
+                overflow: 'hidden'
+              }}>
+                <Paper className="paper-container">
+                  <SiteRecords site={selectedSite} sites={sites} onSitesUpdate={setSites} />
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </Grid>
       </Grid>
 
@@ -82,12 +144,12 @@ const SiteLayout: React.FC = () => {
               onMouseEnter={() => setFabHovered(true)}
               onMouseLeave={() => setFabHovered(false)}
             >
-              {/* Add New Person */}
+              {/* Add Mobile Car */}
               <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '100ms' : '0ms' }}>
                 <Tooltip title="Mobile car" placement="left">
                   <Fab
                     size="large"
-                    // onClick={handleAddNewPerson}
+                    onClick={handleAddMobileCar}
                     className="fab-primary"
                   >
                     <CarCrashOutlined />
@@ -100,7 +162,7 @@ const SiteLayout: React.FC = () => {
                 <Tooltip title="Site Invoice" placement="left">
                   <Fab
                     size="large"
-                    // onClick={handleTimesheet}
+                    onClick={handleSiteInvoice}
                     className="fab-primary"
                   >
                     <LocationCity />
@@ -112,7 +174,7 @@ const SiteLayout: React.FC = () => {
                 <Tooltip title="Add new site" placement="left">
                   <Fab
                     size="large"
-                    // onClick={handleTimesheet}
+                    onClick={handleAddSite}
                     className="fab-primary"
                   >
                     <Map />

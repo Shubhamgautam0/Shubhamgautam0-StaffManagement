@@ -9,7 +9,6 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
   Tabs,
   Tab,
   Accordion,
@@ -21,8 +20,6 @@ import {
 import {
   Close,
   ExpandMore,
-  Schedule,
-  CalendarToday,
 } from '@mui/icons-material';
 import { type Shift, type SiteMember, shiftColors, payRates, billRates, calculateDuration, SiteData } from '../../data/siteData';
 import { staffData, type StaffMember } from '../../data/staffData';
@@ -61,6 +58,9 @@ const AddShiftDrawer: React.FC<AddShiftDrawerProps> = ({
     billRate: '',
     assignedStaff: preSelectedStaff || [],
   });
+  const [showScheduledStaff, setShowScheduledStaff] = useState(
+  viewMode === 'site' || (viewMode === 'staff' && preSelectedStaff.length === 0)
+);
 
   // Update form data when props change
   useEffect(() => {
@@ -77,10 +77,6 @@ const AddShiftDrawer: React.FC<AddShiftDrawerProps> = ({
     staff.name.toLowerCase().includes(staffSearchTerm.toLowerCase()) &&
     staff.status === 'Active'
   );
-
-  console.log('Filtered Staff:', filteredStaff);
-  console.log('Staff Search Term:', staffSearchTerm);
-  console.log('All Staff Data:', staffData);
 
   // Filter available sites based on search term
   const filteredSites = SiteData.filter(site =>
@@ -130,16 +126,26 @@ const AddShiftDrawer: React.FC<AddShiftDrawerProps> = ({
     setSiteSearchTerm(''); // Clear search after selection
   };
 
-  // Update form data when selectedSite, selectedDate, or selectedSiteId changes
-  useEffect(() => {
-    const currentSite = getSelectedSite();
+ useEffect(() => {
+  const currentSite = SiteData.find(site => site.id === selectedSiteId) || selectedSite;
+  const newSiteName = currentSite?.name || '';
+  const newDate = selectedDate.toISOString().split('T')[0];
+  const newAssignedStaff = preSelectedStaff || [];
+
+  // Only update if something actually changed
+  if (
+    formData.siteName !== newSiteName ||
+    formData.date !== newDate ||
+    JSON.stringify(formData.assignedStaff) !== JSON.stringify(newAssignedStaff)
+  ) {
     setFormData(prev => ({
       ...prev,
-      siteName: currentSite?.name || selectedSite?.name || '',
-      date: selectedDate.toISOString().split('T')[0],
-      assignedStaff: preSelectedStaff || [],
+      siteName: newSiteName,
+      date: newDate,
+      assignedStaff: newAssignedStaff,
     }));
-  }, [selectedSite, selectedDate, selectedSiteId, preSelectedStaff]);
+  }
+}, [selectedSite, selectedDate, selectedSiteId, preSelectedStaff]);
 
   const handleSave = () => {
     const currentSite = getSelectedSite();
@@ -717,11 +723,7 @@ const AddShiftDrawer: React.FC<AddShiftDrawerProps> = ({
               </Accordion>
 
               {/* Scheduled Staff Section - Show in site view mode OR when no staff pre-selected in staff view */}
-              {(() => {
-                const shouldShow = (viewMode === 'site' || (viewMode === 'staff' && preSelectedStaff.length === 0));
-                console.log('Staff Section - Should show:', shouldShow, 'ViewMode:', viewMode, 'PreSelectedStaff:', preSelectedStaff);
-                return shouldShow;
-              })() && (
+              {showScheduledStaff && (
                 <Accordion
                   defaultExpanded={true}
                   sx={{ mb: 3, boxShadow: 'none', border: '1px solid var(--clr-border-light)' }}

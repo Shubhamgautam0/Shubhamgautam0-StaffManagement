@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Select, MenuItem, Button, TextField, Paper, Divider } from '@mui/material';
+import { Box, Typography, Select, MenuItem, Button, TextField, Paper, Divider, IconButton } from '@mui/material';
 import { SiteData, type Shift } from '../../data/siteData';
 import { getStaffById } from '../../data/staffData';
+import { Close } from '@mui/icons-material';
 
 
 interface WorkSummary {
@@ -16,7 +17,11 @@ interface WorkSummary {
   totalHours: number;
 }
 
-function SiteInvoice() {
+interface SiteInvoiceProps {
+  onClose?: () => void;
+}
+
+function SiteInvoice({ onClose }: SiteInvoiceProps) {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [timeRange, setTimeRange] = useState('Last Week');
@@ -143,15 +148,17 @@ function SiteInvoice() {
         alignItems: 'center',
         mb: 4
       }}>
-        <Typography variant="h4" sx={{
-          fontWeight: 600,
-          color: '#333',
-          fontSize: '28px'
-        }}>
-            Site Invoice
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography variant="h4" sx={{
+            fontWeight: 600,
+            color: '#333',
+            fontSize: '28px'
+          }}>
+              Site Invoice
+          </Typography>
+        </Box>
 
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
             <Select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
@@ -161,6 +168,11 @@ function SiteInvoice() {
               <MenuItem value="Last Month">Last Month</MenuItem>
               <MenuItem value="Last 3 Months">Last 3 Months</MenuItem>
             </Select>
+            {onClose && (
+              <IconButton onClick={onClose} size="small" sx={{ ml: 1 }}>
+                <Close />
+              </IconButton>
+            )}
         </Box>
       </Box>
        <Box sx={{
