@@ -59,6 +59,13 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
   useEffect(() => {
     const currentPath = location.pathname;
+
+    // Don't highlight any tab when on settings page
+    if (currentPath.startsWith('/settings')) {
+      setActiveTab(-1); // No tab selected
+      return;
+    }
+
     const tabIndex = tabRoutes.findIndex(route => currentPath.startsWith(route));
     if (tabIndex !== -1) {
       setActiveTab(tabIndex);
@@ -67,7 +74,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
-    navigate(tabRoutes[newValue]);
+    window.location.href = tabRoutes[newValue];
   };
 
   const handleReferEarnOpen = () => {
@@ -117,7 +124,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
         <Box className="header-tabs-container">
           <Tabs
-            value={activeTab >= 0 && activeTab < tabRoutes.length ? activeTab : 0}
+            value={activeTab >= 0 && activeTab < tabRoutes.length ? activeTab : false}
             onChange={handleTabChange}
             className="header-tabs"
             variant="standard"
@@ -143,7 +150,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           <IconButton size="small" title='Notifications' className="header-icon-button">
             <Notifications />
           </IconButton>
-          <IconButton size="small" title='Settings' className="header-icon-button">
+          <IconButton
+            size="small"
+            title='Settings'
+            className="header-icon-button"
+            onClick={() => navigate('/settings')}
+          >
             <Settings />
           </IconButton>
           <IconButton

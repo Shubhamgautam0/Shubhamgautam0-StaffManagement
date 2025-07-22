@@ -144,9 +144,9 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
       case 0:
         return renderPersonalInfo();
       case 1:
-        return <Availability />;
+  return <Availability staffId={""} staffName={""} />;
       case 2:
-        return <Licence_Certification />;
+         return <Licence_Certification staffId={""} staffName={""} />;
       default:
         return null;
     }

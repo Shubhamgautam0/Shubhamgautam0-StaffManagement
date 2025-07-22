@@ -1,0 +1,247 @@
+/* Settings Page Layout */
+.settings-page {
+  display: flex;
+  height: 100vh;
+  background-color: #f5f5f5;
+  margin-top: 64px;
+}
+
+/* Left Sidebar - Main Categories */
+.settings-sidebar {
+  width: 280px;
+  background-color: #2c3e50;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #34495e;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #34495e;
+}
+
+.settings-back-button {
+  color: white !important;
+  margin-right: 12px !important;
+  padding: 8px !important;
+}
+
+.settings-back-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.settings-title {
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 24px !important;
+}
+
+.settings-sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.settings-category-list {
+  padding: 0 !important;
+}
+
+.settings-category-item {
+  display: flex !important;
+  align-items: center !important;
+  padding: 16px 20px !important;
+  cursor: pointer !important;
+  border-bottom: 1px solid #34495e !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.settings-category-item:hover {
+  background-color: #34495e !important;
+}
+
+.settings-category-item.selected {
+  background-color: #3498db !important;
+}
+
+.settings-category-icon {
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  color: #bdc3c7;
+}
+
+.settings-category-item.selected .settings-category-icon {
+  color: white;
+}
+
+.settings-category-text .MuiListItemText-primary {
+  color: #bdc3c7 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+.settings-category-item.selected .settings-category-text .MuiListItemText-primary {
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+/* Middle Section - Sub Categories */
+.settings-submenu {
+  width: 250px;
+  background-color: white;
+  border-right: 1px solid #e0e0e0;
+  overflow-y: auto;
+}
+
+.settings-submenu-content {
+  height: 100%;
+}
+
+.settings-submenu-list {
+  padding: 0 !important;
+}
+
+.settings-submenu-item {
+  padding: 16px 24px !important;
+  cursor: pointer !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.settings-submenu-item:hover {
+  background-color: #f8f9fa !important;
+}
+
+.settings-submenu-item.selected {
+  background-color: #e3f2fd !important;
+  border-left: 4px solid #2196f3 !important;
+}
+
+.settings-submenu-text .MuiListItemText-primary {
+  color: #666 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+.settings-submenu-item.selected .settings-submenu-text .MuiListItemText-primary {
+  color: #2196f3 !important;
+  font-weight: 600 !important;
+}
+
+/* Right Section - Content */
+.settings-content {
+  flex: 1;
+  background-color: white;
+  overflow-y: auto;
+}
+
+.settings-content-wrapper {
+  padding: 32px;
+  max-width: 600px;
+}
+
+.settings-content-section {
+  margin-bottom: 32px;
+}
+
+.settings-content-title {
+  color: #333 !important;
+  font-weight: 600 !important;
+  font-size: 20px !important;
+  margin-bottom: 8px !important;
+}
+
+.settings-content-description {
+  color: #666 !important;
+  font-size: 14px !important;
+  margin-bottom: 24px !important;
+  line-height: 1.5 !important;
+}
+
+.settings-form-group {
+  margin-bottom: 24px;
+}
+
+.settings-form-label {
+  color: #333 !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+  display: block;
+}
+
+.settings-form-control {
+  margin-top: 8px !important;
+}
+
+.settings-select {
+  background-color: white !important;
+  border-radius: 4px !important;
+}
+
+.settings-select .MuiOutlinedInput-notchedOutline {
+  border-color: #e0e0e0 !important;
+}
+
+.settings-select:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #bdbdbd !important;
+}
+
+.settings-select.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #2196f3 !important;
+}
+
+.settings-text-field .MuiOutlinedInput-root {
+  border-radius: 4px !important;
+}
+
+.settings-text-field .MuiOutlinedInput-notchedOutline {
+  border-color: #e0e0e0 !important;
+}
+
+.settings-text-field:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #bdbdbd !important;
+}
+
+.settings-text-field .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #2196f3 !important;
+}
+
+.settings-form-text {
+  color: #666 !important;
+  font-size: 14px !important;
+  margin-top: 8px !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .settings-sidebar {
+    width: 240px;
+  }
+  
+  .settings-submenu {
+    width: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .settings-page {
+    flex-direction: column;
+  }
+  
+  .settings-sidebar {
+    width: 100%;
+    height: auto;
+  }
+  
+  .settings-submenu {
+    width: 100%;
+    height: auto;
+  }
+  
+  .settings-content-wrapper {
+    padding: 16px;
+  }
+}

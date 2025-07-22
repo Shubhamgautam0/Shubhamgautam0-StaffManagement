@@ -7,14 +7,11 @@ import Schedule from '../pages/schedule/SiteView';
 import WatchLayout from '../pages/watch/WatchLayout';
 import StaffTimesheetTable from '../pages/staff/StaffTimesheetTable';
 import SiteInvoice from '../pages/sites/siteInvoice';
-
-// Placeholder components for other routes
-
+import { SettingsPage } from '../pages/settings';
 
 
 const StaffTimesheetPage = () => {
   const handleClose = () => {
-    // Navigate back to staff page
     window.history.back();
   };
 
@@ -35,6 +32,7 @@ const AppRouter: React.FC = () => {
       <Route path="/staff" element={<StaffPage />} />
       <Route path="/staff/timesheet" element={<StaffTimesheetPage />} />
       <Route path="/site/invoice" element={<SiteInvoice />} />
+      <Route path="/settings" element={<SettingsPage />} />
     </Routes>
   );
 };

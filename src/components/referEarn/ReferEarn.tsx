@@ -7,7 +7,6 @@ import {
   TextField,
   Button,
   IconButton,
-  Grid,
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import './ReferEarn.css';
@@ -151,8 +150,8 @@ const ReferEarn: React.FC<ReferEarnProps> = ({ open, onClose }) => {
             Referral's information
           </Typography>
           
-          <Grid container spacing={2} className="form-row">
-            <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', md: 'row' } }} className="form-row">
+            <Box sx={{ flex: 1 }}>
               <Typography variant="body2" className="form-field-label">
                 Referral's Name<span className="required-asterisk">*</span>
               </Typography>
@@ -165,8 +164,8 @@ const ReferEarn: React.FC<ReferEarnProps> = ({ open, onClose }) => {
                 className="refer-earn-input"
                 placeholder="Enter referral's name"
               />
-            </Grid>
-            <Grid item xs={12} md={6}>
+            </Box>
+            <Box sx={{ flex: 1 }}>
               <Typography variant="body2" className="form-field-label">
                 Referral's Email Address<span className="required-asterisk">*</span>
               </Typography>
@@ -180,8 +179,8 @@ const ReferEarn: React.FC<ReferEarnProps> = ({ open, onClose }) => {
                 className="refer-earn-input"
                 placeholder="Enter referral's email"
               />
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
 
           <Box className="form-field">
             <Typography variant="body2" className="form-field-label">
@@ -203,8 +202,8 @@ const ReferEarn: React.FC<ReferEarnProps> = ({ open, onClose }) => {
             Your information
           </Typography>
           
-          <Grid container spacing={2} className="form-row">
-            <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', md: 'row' } }} className="form-row">
+            <Box sx={{ flex: 1 }}>
               <Typography variant="body2" className="form-field-label">
                 Your Name<span className="required-asterisk">*</span>
               </Typography>
@@ -217,8 +216,8 @@ const ReferEarn: React.FC<ReferEarnProps> = ({ open, onClose }) => {
                 className="refer-earn-input"
                 placeholder="Enter your name"
               />
-            </Grid>
-            <Grid item xs={12} md={6}>
+            </Box>
+            <Box sx={{ flex: 1 }}>
               <Typography variant="body2" className="form-field-label">
                 Your Email Address<span className="required-asterisk">*</span>
               </Typography>
@@ -232,8 +231,8 @@ const ReferEarn: React.FC<ReferEarnProps> = ({ open, onClose }) => {
                 className="refer-earn-input"
                 placeholder="Enter your email"
               />
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
 
           <Box className="form-field">
             <Typography variant="body2" className="form-field-label">

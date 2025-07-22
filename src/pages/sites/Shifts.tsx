@@ -61,11 +61,17 @@ const Shifts: React.FC<ShiftsProps> = ({ selectedSite, sites: propSites, onSites
   const handleSaveShift = (newShift: Shift) => {
     if (onSitesUpdate) {
       // Update parent state
-      const updatedSites = sites.map(site =>
-        site.id === newShift.siteId
-          ? { ...site, shifts: [...site.shifts, newShift] }
-          : site
-      );
+      const updatedSites = sites.map(site => {
+        if (site.id === newShift.siteId) {
+          const updatedShifts = { ...site.shifts };
+          if (!updatedShifts[newShift.date]) {
+            updatedShifts[newShift.date] = [];
+          }
+          updatedShifts[newShift.date] = [...updatedShifts[newShift.date], newShift];
+          return { ...site, shifts: updatedShifts };
+        }
+        return site;
+      });
       onSitesUpdate(updatedSites);
     }
   };

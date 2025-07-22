@@ -86,9 +86,9 @@ const SiteList: React.FC<SiteListProps> = ({ onSiteSelect, selectedSite, newSite
 
     if (searchTerm) {
       filtered = filtered.filter(site =>
-        site.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        site.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        site.phone.includes(searchTerm)
+        site.name.toLowerCase().includes(searchTerm.toLowerCase()) 
+        // site.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        // site.phone.includes(searchTerm)
       );
     }
 

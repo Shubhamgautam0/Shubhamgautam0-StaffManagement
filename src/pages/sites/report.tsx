@@ -41,20 +41,20 @@ const ReportComponent: React.FC<ReportProps> = ({ selectedSite }) => {
   const [selectedReports, setSelectedReports] = useState<string[]>([]);
   const [autoApprove, setAutoApprove] = useState(false);
 
-  const handleSearch = () => {
-    if (!selectedSite || !startDate || !endDate) return;
+ const handleSearch = () => {
+  if (!selectedSite || !startDate || !endDate) return;
 
-    // Filter reports based on date range
-    const filteredReports = selectedSite.reports.filter(report => {
-      const reportDate = new Date(report.date);
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      return reportDate >= start && reportDate <= end;
-    });
+  // Filter reports based on date range
+  const filteredReports = selectedSite.reports?.filter(report => {
+    const reportDate = new Date(report.date);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    return reportDate >= start && reportDate <= end;
+  }) || [];
 
-    setSearchResults(filteredReports);
-    setShowResults(true);
-  };
+  setSearchResults(filteredReports);
+  setShowResults(true);
+};
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
