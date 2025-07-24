@@ -80,8 +80,20 @@ const StaffPage: React.FC = () => {
   };
 
   return (
-    <Box className="page-container">
-      <Grid container spacing={2} className="grid-container">
+    <Box className="page-container" sx={{
+      '@media (max-width: 768px)': {
+        height: 'auto',
+        minHeight: 'calc(100vh - 64px)',
+        overflowY: 'auto'
+      }
+    }}>
+      <Grid container spacing={2} className="grid-container" sx={{
+        '@media (max-width: 768px)': {
+          height: 'auto',
+          maxHeight: 'none',
+          flexDirection: 'column'
+        }
+      }}>
         {/* Staff List */}
         <Grid size={{ xs: 12, md: (showAddForm || showEditForm) ? 6 : 4 }} className="grid-item">
           <Paper className="paper-container">

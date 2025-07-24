@@ -153,7 +153,7 @@ const StaffList: React.FC<StaffListProps> = ({ onStaffSelect, newStaffList = [] 
       </Box>
 
       {/* Staff List */}
-      <Box sx={{ flex: 1, overflow: 'auto' }}>
+      <Box sx={{ flex: 1, overflow: 'auto'  }}>
         <List sx={{ p: 0 }}>
           {filteredStaff.map((staff) => (
             <ListItem key={staff.id} disablePadding>

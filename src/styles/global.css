@@ -79,14 +79,22 @@ body {
   margin-top: 45px;
 }
 
+.page-container::-webkit-scrollbar {
+  display: none; 
+}
+
 .grid-container {
   height: calc(100vh - 64px - 32px);
   width: calc(100vw - 32px);
   max-height: calc(100vh - 64px - 32px);
   max-width: calc(100vw - 32px);
   margin: 0;
-  overflow: hidden;
+  overflow: scroll;
   padding: 0 40px 0 40px;
+}
+
+.grid-container::-webkit-scrollbar {
+  display: none; 
 }
 
 .grid-item {
@@ -94,6 +102,9 @@ body {
   min-height: 0;
   overflow: hidden;
   padding-right: 30px;
+}
+.grid-item::-webkit-scrollbar {
+  display: none; 
 }
 
 .paper-container {
@@ -1569,9 +1580,35 @@ body {
   padding: 10px 24px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .page-container {
     padding: 8px;
+    height: calc(100vh - 64px) !important;
+    min-height: calc(100vh - 64px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .grid-container {
+    padding: 0 16px 0 16px;
+    height: auto !important;
+    max-height: none !important;
+    flex-direction: column;
+    overflow: visible !important;
+  }
+
+  .grid-item {
+    padding-right: 8px;
+    height: auto;
+    min-height: 300px;
+    margin-bottom: 16px;
+    overflow: visible;
+  }
+
+  .paper-container {
+    height: auto;
+    min-height: 300px;
+    overflow: visible;
   }
 
   .form-row {
@@ -1587,5 +1624,32 @@ body {
   .add-customer-drawer-paper {
     width: 100vw;
     max-width: 100vw;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .page-container {
+    padding: 4px;
+    height: calc(100vh - 64px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .grid-container {
+    padding: 0 8px 0 8px;
+    overflow: visible;
+  }
+
+  .grid-item {
+    padding-right: 4px;
+    min-height: 250px;
+    margin-bottom: 12px;
+    overflow: visible;
+  }
+
+  .paper-container {
+    min-height: 250px;
+    overflow: visible;
   }
 }

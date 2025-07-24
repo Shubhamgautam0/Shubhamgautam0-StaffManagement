@@ -83,7 +83,7 @@ const SiteLayout: React.FC = () => {
   return (
     <Box className="page-container sites-page">
       <Grid container spacing={2} className="grid-container" >
-        <Grid size={{ xs: 12, md: 4 }} className="grid-item">
+        <Grid size={{ xs: 12, sm: 12, md: 4 }} className="grid-item">
           <Paper className="paper-container">
             <SiteList onSiteSelect={handleSiteSelect} selectedSite={selectedSite} sites={sites} />
           </Paper>

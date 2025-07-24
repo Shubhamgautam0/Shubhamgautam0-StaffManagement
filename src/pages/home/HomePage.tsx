@@ -36,10 +36,10 @@ const HomePage: React.FC = () => {
         backgroundRepeat: 'no-repeat'
       }}
     >
-      <Box className="home-header">
+      <Box className="home-header" sx={{display: 'flex', }}>
         <Box className="home-logo">
           <Typography variant="h5" className="logo-text">
-            novagems
+            Staff Management
           </Typography>
           <Typography variant="body2" className="phone-number">
             +1 (604) 628-7015
@@ -61,7 +61,7 @@ const HomePage: React.FC = () => {
           Management System
         </Typography>
         <Typography variant="h6" className="subtitle">
-          Novagems is staff management system.Available on all major platform.
+          This is staff management system.Available on all major platform.
         </Typography>
       </Box>
 

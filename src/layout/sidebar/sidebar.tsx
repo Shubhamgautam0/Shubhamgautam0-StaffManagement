@@ -127,7 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose, onNavigate }) => {
                     handleSubmenuClick(item.key);
                   } else if (item.path) {
                     try {
-                      onNavigate(item.path);
+                      window.location.href = item.path;
                       onClose();
                     } catch (error) {
                       console.error('Navigation error:', error);
@@ -169,7 +169,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose, onNavigate }) => {
                       <ListItemButton
                         onClick={() => {
                           try {
-                            onNavigate(subItem.path);
+                            window.location.href = subItem.path;
                             onClose();
                           } catch (error) {
                             console.error('Submenu navigation error:', error);

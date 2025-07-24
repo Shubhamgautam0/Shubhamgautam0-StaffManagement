@@ -11,8 +11,9 @@ import {
   FormControl,
   Checkbox,
   FormControlLabel,
+  Chip,
 } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import { Close, Add } from '@mui/icons-material';
 import { fieldTypes } from '../../data/reportsData';
 import type { ReportField } from '../../data/reportsData';
 
@@ -33,13 +34,24 @@ const AddReportFieldDialog: React.FC<AddReportFieldDialogProps> = ({
     required: false,
   });
 
+  const [dropdownOptions, setDropdownOptions] = useState<string[]>([]);
+  const [newOption, setNewOption] = useState('');
+
   const handleSave = () => {
     if (fieldData.name.trim()) {
+      // Validate that dropdown/radio/checkbox fields have options
+      if ((fieldData.type === 'Dropdown' || fieldData.type === 'Radio' || fieldData.type === 'Checkbox') && dropdownOptions.length === 0) {
+        return; // Don't save if no options provided for these field types
+      }
+
       const newField: ReportField = {
         id: Date.now().toString(),
         name: fieldData.name.trim(),
         type: fieldData.type,
         required: fieldData.required,
+        ...(fieldData.type === 'Dropdown' || fieldData.type === 'Radio' || fieldData.type === 'Checkbox'
+          ? { options: dropdownOptions }
+          : {})
       };
       onSave(newField);
       handleClose();
@@ -52,7 +64,20 @@ const AddReportFieldDialog: React.FC<AddReportFieldDialogProps> = ({
       type: 'Text',
       required: false,
     });
+    setDropdownOptions([]);
+    setNewOption('');
     onClose();
+  };
+
+  const handleAddOption = () => {
+    if (newOption.trim() && !dropdownOptions.includes(newOption.trim())) {
+      setDropdownOptions([...dropdownOptions, newOption.trim()]);
+      setNewOption('');
+    }
+  };
+
+  const handleRemoveOption = (optionToRemove: string) => {
+    setDropdownOptions(dropdownOptions.filter(option => option !== optionToRemove));
   };
 
   return (
@@ -184,6 +209,91 @@ const AddReportFieldDialog: React.FC<AddReportFieldDialogProps> = ({
             }
           />
         </Box>
+
+        {/* Dropdown Options - Show only for Dropdown, Radio, Checkbox types */}
+        {(fieldData.type === 'Dropdown' || fieldData.type === 'Radio' || fieldData.type === 'Checkbox') && (
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="body2" sx={{
+              mb: 1,
+              color: '#666',
+              fontSize: '12px',
+              fontWeight: 500
+            }}>
+              Options
+            </Typography>
+
+            {/* Add new option */}
+            <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+              <TextField
+                fullWidth
+                size="small"
+                value={newOption}
+                onChange={(e) => setNewOption(e.target.value)}
+                placeholder="Add option"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleAddOption();
+                  }
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: 'white',
+                    '& fieldset': {
+                      borderColor: '#e0e0e0',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: '#c0c0c0',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: 'var(--clr-purple-light)',
+                    },
+                  },
+                }}
+              />
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={handleAddOption}
+                disabled={!newOption.trim()}
+                sx={{
+                  minWidth: 'auto',
+                  px: 2,
+                  borderColor: 'var(--clr-purple-light)',
+                  color: 'var(--clr-purple-light)',
+                  '&:hover': {
+                    borderColor: '#7c4dff',
+                    backgroundColor: 'rgba(124, 77, 255, 0.04)',
+                  },
+                }}
+              >
+                <Add sx={{ fontSize: '16px' }} />
+              </Button>
+            </Box>
+
+            {/* Display added options */}
+            {dropdownOptions.length > 0 && (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                {dropdownOptions.map((option, index) => (
+                  <Chip
+                    key={index}
+                    label={option}
+                    onDelete={() => handleRemoveOption(option)}
+                    size="small"
+                    sx={{
+                      backgroundColor: '#f5f5f5',
+                      '& .MuiChip-deleteIcon': {
+                        color: '#666',
+                        '&:hover': {
+                          color: '#f44336',
+                        },
+                      },
+                    }}
+                  />
+                ))}
+              </Box>
+            )}
+          </Box>
+        )}
         </Box>
 
         {/* Footer Actions */}
@@ -197,7 +307,10 @@ const AddReportFieldDialog: React.FC<AddReportFieldDialogProps> = ({
           <Button
             variant="contained"
             onClick={handleSave}
-            disabled={!fieldData.name.trim()}
+            disabled={
+              !fieldData.name.trim() ||
+              ((fieldData.type === 'Dropdown' || fieldData.type === 'Radio' || fieldData.type === 'Checkbox') && dropdownOptions.length === 0)
+            }
             sx={{
               backgroundColor: 'var(--clr-purple-light)',
               color: 'white',

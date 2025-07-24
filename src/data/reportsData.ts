@@ -11,6 +11,7 @@ export interface ReportField {
   name: string;
   type: string;
   required: boolean;
+  options?: string[]; // For dropdown, radio, checkbox fields
 }
 
 export interface NewReport {

@@ -147,9 +147,9 @@
 @media (max-width: 768px) {
   .home-header {
     padding: 16px 24px;
-    flex-direction: column;
+    flex-direction: row;
     gap: 16px;
-    align-items: flex-start;
+    align-items: space-between;
   }
 
   .home-logo {

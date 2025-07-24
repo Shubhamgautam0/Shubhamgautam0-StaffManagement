@@ -69,6 +69,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ open, onClose, onLoginSuccess }) 
     if (!formData.password.trim()) {
       newErrors.password = 'Password is required';
       isValid = false;
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+      isValid = false;
     }
 
     setErrors(newErrors);
@@ -111,7 +114,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ open, onClose, onLoginSuccess }) 
           mb: 1,
           fontSize: '28px'
         }}>
-          Login with Novagems
+          Login with Staff Management
         </Typography>
         <Typography variant="body1" sx={{
           color: 'var(--clr-text-secondary)',
@@ -233,9 +236,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ open, onClose, onLoginSuccess }) 
             fontWeight: 600,
             borderRadius: '8px',
             textTransform: 'uppercase',
-            '&:hover': {
-              backgroundColor: 'var(--clr-purple-light)',
-            },
           }}
         >
           LOGIN

@@ -8,14 +8,22 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  FormGroup
 } from '@mui/material';
 import {
   Edit,
   Delete,
   Save,
-  Cancel
+  Cancel,
+  Close
 } from '@mui/icons-material';
+import AddReportFieldDialog from '../../components/reports/AddReportFieldDialog';
 
 interface CustomReport {
   id: string;
@@ -52,22 +60,14 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedReport, setEditedReport] = useState<CustomReport | null>(null);
+  // State for managing custom field addition
+  const [showAddField, setShowAddField] = useState(false);
+  // State for field values
+  const [fieldValues, setFieldValues] = useState<{[key: string]: any}>({});
 
   useEffect(() => {
     setEditedReport(report);
   }, [report]);
-
-  if (!report) {
-    return (
-      <Paper className="report-detail-container">
-        <Box className="report-detail-empty">
-          <Typography variant="h6" color="textSecondary">
-            Select a report to view details
-          </Typography>
-        </Box>
-      </Paper>
-    );
-  }
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -94,18 +94,149 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({
     }
   };
 
+  const handleDeleteField = (fieldIndex: number) => {
+    if (editedReport && editedReport.fields) {
+      const updatedFields = editedReport.fields.filter((_, index) => index !== fieldIndex);
+      setEditedReport({
+        ...editedReport,
+        fields: updatedFields
+      });
+    }
+  };
+
+  const handleAddNewField = (field: any) => {
+    if (editedReport) {
+      const updatedFields = [...(editedReport.fields || []), field];
+      setEditedReport({
+        ...editedReport,
+        fields: updatedFields
+      });
+    }
+    setShowAddField(false);
+  };
+
+  const handleFieldValueChange = (fieldId: string, value: any) => {
+    setFieldValues(prev => ({
+      ...prev,
+      [fieldId]: value
+    }));
+  };
+
+  const renderField = (field: any, index: number) => {
+    const fieldId = field.id || `field-${index}`;
+    const currentValue = fieldValues[fieldId] || '';
+
+    switch (field.type) {
+      case 'Dropdown':
+        return (
+          <FormControl fullWidth disabled={!isEditing}>
+            <InputLabel>{field.name}</InputLabel>
+            <Select
+              value={currentValue}
+              onChange={(e) => handleFieldValueChange(fieldId, e.target.value)}
+              label={field.name}
+              required={field.required}
+            >
+              {field.options?.map((option: string, optionIndex: number) => (
+                <MenuItem key={optionIndex} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        );
+
+      case 'Radio':
+        return (
+          <FormControl component="fieldset" disabled={!isEditing}>
+            <Typography variant="body2" sx={{ mb: 1, color: '#666', fontSize: '12px' }}>
+              {field.name} {field.required && '*'}
+            </Typography>
+            <RadioGroup
+              value={currentValue}
+              onChange={(e) => handleFieldValueChange(fieldId, e.target.value)}
+            >
+              {field.options?.map((option: string, optionIndex: number) => (
+                <FormControlLabel
+                  key={optionIndex}
+                  value={option}
+                  control={<Radio size="small" />}
+                  label={option}
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
+        );
+
+      case 'Checkbox':
+        return (
+          <FormControl component="fieldset" disabled={!isEditing}>
+            <Typography variant="body2" sx={{ mb: 1, color: '#666', fontSize: '12px' }}>
+              {field.name} {field.required && '*'}
+            </Typography>
+            <FormGroup>
+              {field.options?.map((option: string, optionIndex: number) => (
+                <FormControlLabel
+                  key={optionIndex}
+                  control={
+                    <Checkbox
+                      size="small"
+                      checked={Array.isArray(currentValue) ? currentValue.includes(option) : false}
+                      onChange={(e) => {
+                        const currentArray = Array.isArray(currentValue) ? currentValue : [];
+                        if (e.target.checked) {
+                          handleFieldValueChange(fieldId, [...currentArray, option]);
+                        } else {
+                          handleFieldValueChange(fieldId, currentArray.filter((item: string) => item !== option));
+                        }
+                      }}
+                    />
+                  }
+                  label={option}
+                />
+              ))}
+            </FormGroup>
+          </FormControl>
+        );
+
+      default:
+        return (
+          <TextField
+            fullWidth
+            label={field.name}
+            type={
+              field.type === 'Number' ? 'number' :
+              field.type === 'Date' ? 'date' :
+              field.type === 'Time' ? 'time' :
+              field.type === 'Email' ? 'email' :
+              field.type === 'Phone' ? 'tel' :
+              'text'
+            }
+            value={currentValue}
+            onChange={(e) => handleFieldValueChange(fieldId, e.target.value)}
+            disabled={!isEditing}
+            variant="outlined"
+            required={field.required}
+            multiline={field.type === 'Textarea'}
+            rows={field.type === 'Textarea' ? 3 : 1}
+            slotProps={field.type === 'Date' || field.type === 'Time' ? { inputLabel: { shrink: true } } : undefined}
+          />
+        );
+    }
+  };
+
   return (
     <Paper className="report-detail-container">
       <Box className="report-detail-header">
         <Box className="report-detail-profile">
           <Box
             className="report-detail-circle"
-            style={{ backgroundColor: report.color }}
+            style={{ backgroundColor: report?.color || '#2196F3' }}
           >
           </Box>
           <Box className="report-detail-info">
             <Typography variant="h5" className="report-detail-name">
-              {editedReport?.name || report.name}
+              {editedReport?.name || report?.name || 'New Report'}
             </Typography>
           </Box>
         </Box>
@@ -135,7 +266,7 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({
 
       <Box className="report-detail-content">
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {/* Row 1: Report Name and Type */}
+          {/* Always show Report Name and Type - these are required */}
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
             <TextField
               label="Report Name"
@@ -159,120 +290,7 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({
             </FormControl>
           </Box>
 
-          {/* Row 2: Priority and Site Name */}
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            {editedReport?.priority && (
-              <FormControl disabled={!isEditing} sx={{ flex: 1, minWidth: '200px' }}>
-                <InputLabel>Priority</InputLabel>
-                <Select
-                  value={editedReport?.priority || ''}
-                  onChange={(e) => handleFieldChange('priority', e.target.value)}
-                  label="Priority"
-                >
-                  <MenuItem value="high">High</MenuItem>
-                  <MenuItem value="medium">Medium</MenuItem>
-                  <MenuItem value="low">Low</MenuItem>
-                </Select>
-              </FormControl>
-            )}
-            <TextField
-              label="Site Name"
-              value={editedReport?.siteName || ''}
-              onChange={(e) => handleFieldChange('siteName', e.target.value)}
-              disabled={!isEditing}
-              variant="outlined"
-              sx={{ flex: 1, minWidth: '200px' }}
-            />
-          </Box>
-
-          {/* Row 3: Date and Times */}
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <TextField
-              label="Date"
-              type="date"
-              value={editedReport?.date || ''}
-              onChange={(e) => handleFieldChange('date', e.target.value)}
-              disabled={!isEditing}
-              variant="outlined"
-              sx={{ flex: 1, minWidth: '150px' }}
-              slotProps={{ inputLabel: { shrink: true } }}
-            />
-            <TextField
-              label="Start Time"
-              type="time"
-              value={editedReport?.startTime || ''}
-              onChange={(e) => handleFieldChange('startTime', e.target.value)}
-              disabled={!isEditing}
-              variant="outlined"
-              sx={{ flex: 1, minWidth: '150px' }}
-              slotProps={{ inputLabel: { shrink: true } }}
-            />
-            <TextField
-              label="End Time"
-              type="time"
-              value={editedReport?.endTime || ''}
-              onChange={(e) => handleFieldChange('endTime', e.target.value)}
-              disabled={!isEditing}
-              variant="outlined"
-              sx={{ flex: 1, minWidth: '150px' }}
-              slotProps={{ inputLabel: { shrink: true } }}
-            />
-          </Box>
-
-          {/* Row 4: Staff and Status */}
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <TextField
-              label="Staff Name"
-              value={editedReport?.staffName || ''}
-              onChange={(e) => handleFieldChange('staffName', e.target.value)}
-              disabled={!isEditing}
-              variant="outlined"
-              sx={{ flex: 1, minWidth: '200px' }}
-            />
-            <FormControl disabled={!isEditing} sx={{ flex: 1, minWidth: '200px' }}>
-              <InputLabel>Duty Status</InputLabel>
-              <Select
-                value={editedReport?.dutyStatus || ''}
-                onChange={(e) => handleFieldChange('dutyStatus', e.target.value)}
-                label="Duty Status"
-              >
-                <MenuItem value="Duty Started">Duty Started</MenuItem>
-                <MenuItem value="Duty Not Started">Duty Not Started</MenuItem>
-                <MenuItem value="Duty Completed">Duty Completed</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-
-          {/* Row 5: Report Status */}
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <FormControl disabled={!isEditing} sx={{ flex: 1, minWidth: '200px' }}>
-              <InputLabel>Report Status</InputLabel>
-              <Select
-                value={editedReport?.reportStatus || ''}
-                onChange={(e) => handleFieldChange('reportStatus', e.target.value)}
-                label="Report Status"
-              >
-                <MenuItem value="All">All</MenuItem>
-                <MenuItem value="Not Sent">Not Sent</MenuItem>
-                <MenuItem value="Approved">Approved</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-
-          {/* Description */}
-          <TextField
-            fullWidth
-            label="Description"
-            value={editedReport?.description || ''}
-            onChange={(e) => handleFieldChange('description', e.target.value)}
-            disabled={!isEditing}
-            variant="outlined"
-            multiline
-            rows={4}
-            placeholder="Enter report description..."
-          />
-
-          {/* Custom Fields */}
+          {/* Custom Fields from Dialog */}
           {editedReport?.fields && editedReport.fields.length > 0 && (
             <Box>
               <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
@@ -280,24 +298,64 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {editedReport.fields.map((field: any, index: number) => (
-                  <TextField
-                    key={index}
-                    fullWidth
-                    label={field.name}
-                    type={field.type === 'Number' ? 'number' : field.type === 'Date' ? 'date' : 'text'}
-                    disabled={!isEditing}
-                    variant="outlined"
-                    required={field.required}
-                    multiline={field.type === 'Textarea'}
-                    rows={field.type === 'Textarea' ? 3 : 1}
-                    slotProps={field.type === 'Date' ? { inputLabel: { shrink: true } } : undefined}
-                  />
+                  <Box key={index} sx={{ position: 'relative' }}>
+                    {renderField(field, index)}
+                    {isEditing && (
+                      <IconButton
+                        onClick={() => handleDeleteField(index)}
+                        sx={{
+                          position: 'absolute',
+                          top: 8,
+                          right: 8,
+                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                          color: '#666',
+                          width: 24,
+                          height: 24,
+                          '&:hover': {
+                            backgroundColor: '#f5f5f5',
+                            color: '#f44336'
+                          }
+                        }}
+                        size="small"
+                      >
+                        <Close fontSize="small" />
+                      </IconButton>
+                    )}
+                  </Box>
                 ))}
               </Box>
             </Box>
           )}
+
+          {/* ADD FIELD Button */}
+          {isEditing && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+              <Button
+                variant="outlined"
+                onClick={() => setShowAddField(true)}
+                sx={{
+                  borderColor: 'var(--clr-purple-light)',
+                  color: 'var(--clr-purple)',
+                  textTransform: 'uppercase',
+                  fontWeight: 600,
+                  fontSize: '12px',
+                  px: 3,
+                  py: 1,
+                }}
+              >
+                ADD FIELD
+              </Button>
+            </Box>
+          )}
         </Box>
       </Box>
+
+      {/* Add Field Dialog */}
+      <AddReportFieldDialog
+        open={showAddField}
+        onClose={() => setShowAddField(false)}
+        onSave={handleAddNewField}
+      />
     </Paper>
   );
 };
