@@ -27,51 +27,50 @@ const SettingsSubMenu: React.FC<SettingsSubMenuProps> = ({
         ];
       case 'notifications':
         return [
-          { id: 'email-notifications', label: 'Email Notifications' },
-          { id: 'push-notifications', label: 'Push Notifications' },
-          { id: 'sms-notifications', label: 'SMS Notifications' }
+          { id: 'notify-manager', label: 'Notify Manager' },
+          { id: 'notify-staff', label: 'Notify Staff' },
         ];
       case 'shift-settings':
         return [
-          { id: 'shift-templates', label: 'Shift Templates' },
-          { id: 'shift-rules', label: 'Shift Rules' },
-          { id: 'auto-scheduling', label: 'Auto Scheduling' }
+          { id: 'Start Duty', label: 'Start Duty' },
+          { id: 'Shift Settings', label: 'Shift Settings' },
+          { id: 'Edit Shift', label: 'Edit Shift' },
+          { id: 'Shift Report', label: 'Shift Report' }
         ];
       case 'staff':
         return [
-          { id: 'staff-roles', label: 'Staff Roles' },
-          { id: 'permissions', label: 'Permissions' },
-          { id: 'staff-groups', label: 'Staff Groups' }
+          { id: 'Shift Reminders', label: 'Shift Reminders' },
+          { id: 'Shift Confirmation', label: 'Shift Confirmation' },
+          { id: 'Staff Name Format', label: 'Staff Name Format' },
+          { id: 'Custom Field', label: 'Custom Field' },
+          { id: 'License Reminders', label: 'License Reminders' },
+          { id: 'Attachments', label: 'Attachments' }
         ];
       case 'visitor-management':
         return [
           { id: 'visitor-settings', label: 'Visitor Settings' },
-          { id: 'visitor-types', label: 'Visitor Types' },
-          { id: 'check-in-process', label: 'Check-in Process' }
         ];
       case 'site':
         return [
-          { id: 'site-settings', label: 'Site Settings' },
-          { id: 'geofencing', label: 'Geofencing' },
-          { id: 'site-templates', label: 'Site Templates' }
+          { id: 'Site Setting', label: 'Site Setting' },
+          { id: 'Custom Field', label: 'Custom Field' },
         ];
       case 'customers':
         return [
           { id: 'customer-list', label: 'Customer List' },
-          { id: 'customer-groups', label: 'Customer Groups' },
-          { id: 'billing-settings', label: 'Billing Settings' }
         ];
       case 'rates':
         return [
           { id: 'pay-rates', label: 'Pay Rates' },
           { id: 'bill-rates', label: 'Bill Rates' },
-          { id: 'overtime-rates', label: 'Overtime Rates' }
         ];
       case 'invoice-estimate':
         return [
-          { id: 'invoice-settings', label: 'Invoice Settings' },
-          { id: 'estimate-templates', label: 'Estimate Templates' },
-          { id: 'payment-terms', label: 'Payment Terms' }
+          { id: 'General', label: 'General' },
+          { id: 'Invoice', label: 'Invoice' },
+          { id: 'Estimate', label: 'Estimate' },
+          { id: 'Products ', label: 'Products ' },
+          { id: 'Sales Taxes', label: 'Sales Taxes' }
         ];
       default:
         return [];

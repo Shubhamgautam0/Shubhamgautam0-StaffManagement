@@ -33,6 +33,7 @@ export interface Report {
   staffInitials: string;
   reportStatus: 'All' | 'Not Sent' | 'Approved';
   timeDuration: string;
+  isCustomReport?: boolean; // Optional property to identify custom reports
 }
 
 export interface SiteLicence {
@@ -882,30 +883,37 @@ export const CustomerData: SiteCustomer[] = [
   {
     id: '1',
     name: 'Ambar Singh',
-    email: 'ambar.singh@company.com',
-    phone: '9887654321',
-    address: '123 Business Ave, New York, NY 10001'
+    email: 'ambar010101@mailinator.com',
+    phone: '+91 (988) 765 4321',
+    address: 'Noida Sector 63'
   },
   {
     id: '2',
     name: 'Maryo',
     email: 'maryo@enterprise.com',
-    phone: '818720285',
+    phone: '+818 (818) 720 285',
     address: '456 Corporate Blvd, Los Angeles, CA 90210'
   },
   {
     id: '3',
     name: 'Mimi Kotb',
     email: 'mimi.kotb@corporation.com',
-    phone: '720-2855',
+    phone: '+52 (720) -28 55',
     address: '789 Industry St, Chicago, IL 60601'
   },
   {
     id: '4',
     name: 'OA',
     email: 'oa@business.com',
-    phone: '+1 (555) 456-7890',
+    phone: '+64 (647) 513 4868',
     address: '321 Commerce Dr, Houston, TX 77001'
+  },
+  {
+    id: '5',
+    name: 'Shubham gautam',
+    email: 'shubham.gautam@company.com',
+    phone: '904956 (879) 90 4956',
+    address: 'Delhi, India'
   }
 ];
 
@@ -930,6 +938,27 @@ export const getAllCustomers = (): SiteCustomer[] => {
 // Get customer by ID
 export const getCustomerById = (customerId: string): SiteCustomer | undefined => {
   return CustomerData.find(customer => customer.id === customerId);
+};
+
+// Update customer
+export const updateCustomer = (customerId: string, updates: Partial<SiteCustomer>): boolean => {
+  const customerIndex = CustomerData.findIndex(customer => customer.id === customerId);
+  if (customerIndex === -1) return false;
+
+  CustomerData[customerIndex] = {
+    ...CustomerData[customerIndex],
+    ...updates
+  };
+  return true;
+};
+
+// Delete customer
+export const deleteCustomer = (customerId: string): boolean => {
+  const customerIndex = CustomerData.findIndex(customer => customer.id === customerId);
+  if (customerIndex === -1) return false;
+
+  CustomerData.splice(customerIndex, 1);
+  return true;
 };
 
 // Shift Menu Data

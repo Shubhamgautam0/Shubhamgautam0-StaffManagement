@@ -19,6 +19,8 @@ import {
   ExpandLess,
   ExpandMore,
   Person,
+  Business,
+  Description,
 } from '@mui/icons-material';
 import './sidebar.css';
 
@@ -90,6 +92,19 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose, onNavigate }) => {
         },
       ],
     },
+    {
+      text: 'Customers',
+      icon: <Business />,
+      path: '/customers',
+      key: 'customers',
+    },
+    {
+      text: 'Custom Reports',
+      icon: <Description />,
+      path: '/custom-reports',
+      key: 'custom-reports',
+    },
+
   ];
 
   const drawerContent = (

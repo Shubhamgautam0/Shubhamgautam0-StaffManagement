@@ -1,0 +1,166 @@
+/* Timesheet Settings Styles */
+
+.timesheet-settings-container {
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timesheet-settings-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+.timesheet-settings-description {
+  color: #666;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.timesheet-form-group {
+  margin-bottom: 24px;
+}
+
+.timesheet-form-label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: block;
+  color: #333;
+}
+
+.timesheet-checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.timesheet-checkbox-content {
+  flex: 1;
+}
+
+.timesheet-checkbox-title {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.timesheet-checkbox-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.timesheet-input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.timesheet-time-input {
+  width: 100px;
+}
+
+.timesheet-break-table {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.timesheet-break-table .MuiTableHead-root {
+  background-color: #f5f5f5;
+}
+
+.timesheet-break-table .MuiTableCell-root {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.timesheet-add-button {
+  margin-top: 16px;
+  border-color: #1976d2;
+  color: #1976d2;
+}
+
+.timesheet-add-button:hover {
+  background-color: rgba(25, 118, 210, 0.04);
+}
+
+.timesheet-holiday-table {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.timesheet-holiday-table .MuiTableHead-root {
+  background-color: #f5f5f5;
+}
+
+.timesheet-holiday-table .MuiTableCell-root {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.timesheet-dialog-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.timesheet-dialog-field {
+  margin-bottom: 16px;
+}
+
+.timesheet-dialog-field label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.timesheet-dialog-field .required {
+  color: #d32f2f;
+}
+
+.timesheet-dialog-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.timesheet-cancel-button {
+  border-color: #666;
+  color: #666;
+}
+
+.timesheet-save-button {
+  background-color: #1976d2;
+  color: white;
+}
+
+.timesheet-save-button:hover {
+  background-color: #1565c0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .timesheet-settings-container {
+    padding: 16px;
+  }
+  
+  .timesheet-input-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .timesheet-time-input {
+    width: 100%;
+    max-width: 200px;
+  }
+}

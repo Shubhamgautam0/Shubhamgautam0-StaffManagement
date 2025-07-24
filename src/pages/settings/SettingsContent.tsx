@@ -1,5 +1,25 @@
 import React from 'react';
-import { Box, Typography, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+
+// Timesheet components
+import WorkWeek from './timesheet/WorkWeek';
+import TimeFormat from './timesheet/TimeFormat';
+import OvertimeRule from './timesheet/OvertimeRule';
+import DayNightTimeRule from './timesheet/DayNightTimeRule';
+import Breaks from './timesheet/Breaks';
+import PayrollTime from './timesheet/PayrollTime';
+import WeekendTimeRule from './timesheet/WeekendTimeRule';
+import HolidayHrs from './timesheet/HolidayHrs';
+
+// Notification components
+import NotifyManager from './notification/NotifyManager';
+import NotifyStaff from './notification/NotifyStaff';
+
+// Other settings components
+import ShiftSettings from './shift-setting/ShiftSettings';
+import StaffSettings from './staff/StaffSettings';
+import { Site } from './site';
+import { Rates } from './rates';
 
 interface SettingsContentProps {
   selectedCategory: string;
@@ -10,131 +30,104 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
   selectedCategory,
   selectedSubItem
 }) => {
-  const renderWorkWeekContent = () => (
-    <Box className="settings-content-section">
-      <Typography variant="h6" className="settings-content-title">
-        Work week
-      </Typography>
-      <Typography variant="body2" className="settings-content-description">
-        Your weekly schedule view and payroll calculation will also be based on this work week
-      </Typography>
-      
-      <Box className="settings-form-group">
-        <Typography variant="body2" className="settings-form-label">
-          Start day
-        </Typography>
-        <FormControl fullWidth className="settings-form-control">
-          <Select
-            value="tuesday"
-            className="settings-select"
-            displayEmpty
-          >
-            <MenuItem value="monday">Monday</MenuItem>
-            <MenuItem value="tuesday">Tuesday</MenuItem>
-            <MenuItem value="wednesday">Wednesday</MenuItem>
-            <MenuItem value="thursday">Thursday</MenuItem>
-            <MenuItem value="friday">Friday</MenuItem>
-            <MenuItem value="saturday">Saturday</MenuItem>
-            <MenuItem value="sunday">Sunday</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+  // Helper function to format titles
+  const formatTitle = (text: string): string => {
+    if (!text) return 'Settings';
+    return text
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, l => l.toUpperCase());
+  };
 
-      <Box className="settings-form-group">
-        <Typography variant="body2" className="settings-form-text">
-          Work week Tue-Mon
+  // Validate props
+  if (!selectedCategory || !selectedSubItem) {
+    return (
+      <Box className="settings-content-section">
+        <Typography variant="h6" className="settings-content-title">
+          Settings
+        </Typography>
+        <Typography variant="body2" className="settings-content-description">
+          Please select a category and setting to configure.
         </Typography>
       </Box>
-    </Box>
-  );
-
-  const renderTimeFormatContent = () => (
-    <Box className="settings-content-section">
-      <Typography variant="h6" className="settings-content-title">
-        Time Format
-      </Typography>
-      <Typography variant="body2" className="settings-content-description">
-        Choose your preferred time format for displaying times throughout the application
-      </Typography>
-      
-      <Box className="settings-form-group">
-        <Typography variant="body2" className="settings-form-label">
-          Time Format
-        </Typography>
-        <FormControl fullWidth className="settings-form-control">
-          <Select
-            value="12-hour"
-            className="settings-select"
-            displayEmpty
-          >
-            <MenuItem value="12-hour">12 Hour (AM/PM)</MenuItem>
-            <MenuItem value="24-hour">24 Hour</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-    </Box>
-  );
-
-  const renderOvertimeRuleContent = () => (
-    <Box className="settings-content-section">
-      <Typography variant="h6" className="settings-content-title">
-        Overtime Rule
-      </Typography>
-      <Typography variant="body2" className="settings-content-description">
-        Configure overtime calculation rules for your organization
-      </Typography>
-      
-      <Box className="settings-form-group">
-        <Typography variant="body2" className="settings-form-label">
-          Daily Overtime Threshold (hours)
-        </Typography>
-        <TextField
-          fullWidth
-          type="number"
-          defaultValue="8"
-          className="settings-text-field"
-        />
-      </Box>
-
-      <Box className="settings-form-group">
-        <Typography variant="body2" className="settings-form-label">
-          Weekly Overtime Threshold (hours)
-        </Typography>
-        <TextField
-          fullWidth
-          type="number"
-          defaultValue="40"
-          className="settings-text-field"
-        />
-      </Box>
-    </Box>
-  );
+    );
+  }
 
   const renderDefaultContent = () => (
     <Box className="settings-content-section">
       <Typography variant="h6" className="settings-content-title">
-        {selectedSubItem.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+        {formatTitle(selectedSubItem)}
       </Typography>
       <Typography variant="body2" className="settings-content-description">
-        Settings for {selectedSubItem.replace('-', ' ')} will be available here.
+        Settings for {formatTitle(selectedSubItem)} will be available here.
       </Typography>
     </Box>
   );
 
   const renderContent = () => {
-    if (selectedCategory === 'timesheet') {
-      switch (selectedSubItem) {
-        case 'work-week':
-          return renderWorkWeekContent();
-        case 'time-format':
-          return renderTimeFormatContent();
-        case 'overtime-rule':
-          return renderOvertimeRuleContent();
+    try {
+      switch (selectedCategory) {
+        case 'timesheet':
+          return renderTimesheetContent();
+        case 'notifications':
+          return renderNotificationContent();
+        case 'shift-settings':
+          return <ShiftSettings selectedSubItem={selectedSubItem} />;
+        case 'staff':
+          return <StaffSettings selectedSubItem={selectedSubItem} />;
+        case 'site':
+          return <Site selectedSubItem={selectedSubItem} />;
+        case 'rates':
+          return <Rates selectedSubItem={selectedSubItem} />;
         default:
           return renderDefaultContent();
       }
+    } catch (error) {
+      console.error('Error rendering settings content:', error);
+      return (
+        <Box className="settings-content-section">
+          <Typography variant="h6" color="error">
+            Error Loading Settings
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            There was an error loading the settings content. Please try again.
+          </Typography>
+        </Box>
+      );
     }
-    return renderDefaultContent();
+  };
+
+  const renderTimesheetContent = () => {
+    switch (selectedSubItem) {
+      case 'work-week':
+        return <WorkWeek />;
+      case 'time-format':
+        return <TimeFormat />;
+      case 'overtime-rule':
+        return <OvertimeRule />;
+      case 'day-night-time-rule':
+        return <DayNightTimeRule />;
+      case 'breaks':
+        return <Breaks />;
+      case 'payroll-time':
+        return <PayrollTime />;
+      case 'weekend-time-rule':
+        return <WeekendTimeRule />;
+      case 'holiday-hrs':
+        return <HolidayHrs />;
+      default:
+        return renderDefaultContent();
+    }
+  };
+
+  const renderNotificationContent = () => {
+    switch (selectedSubItem) {
+      case 'notify-manager':
+        return <NotifyManager />;
+      case 'notify-staff':
+        return <NotifyStaff />;
+      default:
+        return renderDefaultContent();
+    }
   };
 
   return (

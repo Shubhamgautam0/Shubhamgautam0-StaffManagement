@@ -8,6 +8,8 @@ import WatchLayout from '../pages/watch/WatchLayout';
 import StaffTimesheetTable from '../pages/staff/StaffTimesheetTable';
 import SiteInvoice from '../pages/sites/siteInvoice';
 import { SettingsPage } from '../pages/settings';
+import { CustomerPage } from '../pages/customers';
+import { CustomReportPage } from '../pages/custom-report';
 
 
 const StaffTimesheetPage = () => {
@@ -32,6 +34,8 @@ const AppRouter: React.FC = () => {
       <Route path="/staff" element={<StaffPage />} />
       <Route path="/staff/timesheet" element={<StaffTimesheetPage />} />
       <Route path="/site/invoice" element={<SiteInvoice />} />
+      <Route path="/customers" element={<CustomerPage />} />
+      <Route path="/custom-reports" element={<CustomReportPage />} />
       <Route path="/settings" element={<SettingsPage />} />
     </Routes>
   );
