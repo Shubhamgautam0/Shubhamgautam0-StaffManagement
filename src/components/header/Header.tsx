@@ -30,6 +30,8 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ReferEarn from '../referEarn';
+import { RequestDrawer } from '../../pages/request';
+import { NotificationDrawer } from '../../pages/notification';
 import './Header.css';
 
 interface HeaderProps {
@@ -42,6 +44,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const [activeTab, setActiveTab] = useState<number>(-1);
   const [referEarnOpen, setReferEarnOpen] = useState<boolean>(false);
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
+  const [requestDrawerOpen, setRequestDrawerOpen] = useState<boolean>(false);
+  const [notificationDrawerOpen, setNotificationDrawerOpen] = useState<boolean>(false);
 
   const tabRoutes = [
     '/watch',
@@ -111,6 +115,22 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     console.log('Logout clicked');
   };
 
+  const handleRequestDrawerOpen = () => {
+    setRequestDrawerOpen(true);
+  };
+
+  const handleRequestDrawerClose = () => {
+    setRequestDrawerOpen(false);
+  };
+
+  const handleNotificationDrawerOpen = () => {
+    setNotificationDrawerOpen(true);
+  };
+
+  const handleNotificationDrawerClose = () => {
+    setNotificationDrawerOpen(false);
+  };
+
   return (
     <div className='header-container'>
       <Box className="header-left">
@@ -131,7 +151,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             indicatorColor="primary"
             textColor="primary"
           >
-            {tabData.map((tab, index) => (
+            {tabData.map((tab) => (
               <Tab
                 key={tab.label}
                 label={tab.label}
@@ -147,7 +167,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
       <Box className="header-right">
         {/* Header Icons - Hide on small screens */}
         <Box className="header-icons" sx={{ display: { xs: 'none', md: 'flex' } }}>
-          <IconButton size="small" title='Notifications' className="header-icon-button">
+          <IconButton
+            size="small"
+            title='Notifications'
+            className="header-icon-button"
+            onClick={handleNotificationDrawerOpen}
+          >
             <Notifications />
           </IconButton>
           <IconButton
@@ -166,7 +191,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           >
             <MoreTime />
           </IconButton>
-          <IconButton size="small" title='Request' className="header-icon-button">
+          <IconButton
+            size="small"
+            title='Request'
+            className="header-icon-button"
+            onClick={handleRequestDrawerOpen}
+          >
             <RequestPageOutlined />
           </IconButton>
         </Box>
@@ -283,6 +313,18 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
       <ReferEarn
         open={referEarnOpen}
         onClose={handleReferEarnClose}
+      />
+
+      {/* Request Drawer */}
+      <RequestDrawer
+        open={requestDrawerOpen}
+        onClose={handleRequestDrawerClose}
+      />
+
+      {/* Notification Drawer */}
+      <NotificationDrawer
+        open={notificationDrawerOpen}
+        onClose={handleNotificationDrawerClose}
       />
     </div>
   );
