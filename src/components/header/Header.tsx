@@ -64,7 +64,6 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   useEffect(() => {
     const currentPath = location.pathname;
 
-    // Don't highlight any tab when on settings page
     if (currentPath.startsWith('/settings')) {
       setActiveTab(-1); // No tab selected
       return;
@@ -111,8 +110,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
   const handleLogout = () => {
     handleUserMenuClose();
-    // Add logout logic here
     console.log('Logout clicked');
+    window.location.href = '/';
   };
 
   const handleRequestDrawerOpen = () => {
@@ -165,7 +164,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
       </Box>
 
       <Box className="header-right">
-        {/* Header Icons - Hide on small screens */}
+        {/* Header Icons */}
         <Box className="header-icons" sx={{ display: { xs: 'none', md: 'flex' } }}>
           <IconButton
             size="small"
@@ -309,19 +308,16 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         </Menu>
       </Box>
 
-      {/* Refer & Earn Popup */}
       <ReferEarn
         open={referEarnOpen}
         onClose={handleReferEarnClose}
       />
 
-      {/* Request Drawer */}
       <RequestDrawer
         open={requestDrawerOpen}
         onClose={handleRequestDrawerClose}
       />
 
-      {/* Notification Drawer */}
       <NotificationDrawer
         open={notificationDrawerOpen}
         onClose={handleNotificationDrawerClose}

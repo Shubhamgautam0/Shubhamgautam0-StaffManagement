@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import StaffPage from '../pages/staff/StaffPage';
 import { Box, Typography } from '@mui/material';
 import SiteLayout from '../pages/sites/SiteLayout';
@@ -10,6 +10,7 @@ import SiteInvoice from '../pages/sites/siteInvoice';
 import { SettingsPage } from '../pages/settings';
 import { CustomerPage } from '../pages/customers';
 import { CustomReportPage } from '../pages/custom-report';
+import HomePage from '../pages/home/HomePage';
 
 
 const StaffTimesheetPage = () => {
@@ -27,7 +28,8 @@ const StaffTimesheetPage = () => {
 const AppRouter: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/staff" replace />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/home" element={<HomePage />} />
       <Route path="/watch" element={<WatchLayout />} />
       <Route path="/schedule" element={<Schedule />} />
       <Route path="/sites" element={<SiteLayout />} />

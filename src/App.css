@@ -21,6 +21,9 @@
   --clr-yellow: #fec80a;
   --clr-jet: #302924;
   --clr-purple: #9D00FF;
+  --clr-purple-light: #B347FF;
+  --clr-text-primary: #333333;
+  --clr-text-secondary: #666666;
   --font-family-bai: "Bai Jamjuree", sans-serif;
   --transition-default: all 300ms ease-in-out;
 }
