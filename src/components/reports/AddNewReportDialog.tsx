@@ -236,17 +236,17 @@ const AddNewReportDialog: React.FC<AddNewReportDialogProps> = ({
               variant="outlined"
               onClick={() => setShowAddField(true)}
               sx={{
-                color: 'var(--clr-purple-light)',
+                color: 'var(--clr-purple)',
                 borderColor: 'var(--clr-purple-light)',
                 textTransform: 'uppercase',
                 fontSize: '12px',
                 fontWeight: 600,
                 px: 3,
                 py: 1.5,
-                '&:hover': {
-                  borderColor: 'var(--clr-purple)',
-                  backgroundColor: 'rgba(142, 110, 200, 0.04)',
-                },
+                // '&:hover': {
+                //   borderColor: 'var(--clr-purple)',
+                //   backgroundColor: 'rgba(142, 110, 200, 0.04)',
+                // },
               }}
             >
               ADD FIELD
@@ -308,7 +308,7 @@ const AddNewReportDialog: React.FC<AddNewReportDialogProps> = ({
               onClick={handleSave}
               disabled={!formData.name.trim()}
               sx={{
-                backgroundColor: 'var(--clr-purple-light)',
+                backgroundColor: 'var(--clr-purple)',
                 color: 'white',
                 px: 4,
                 py: 1.5,

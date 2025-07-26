@@ -101,7 +101,6 @@ const StaffPage: React.FC = () => {
           </Paper>
         </Grid>
 
-        {/* Staff Details and Records OR Add/Edit Staff Form */}
         <Grid size={{ xs: 12, md: (showAddForm || showEditForm) ? 6 : 8 }} className="grid-item">
           {showAddForm ? (
             <AddStaffForm

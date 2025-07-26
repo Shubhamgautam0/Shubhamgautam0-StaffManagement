@@ -16,14 +16,17 @@ import {
   Phone
 } from '@mui/icons-material';
 import type { SiteMember } from '../../data/siteData';
+import EditSiteForm from './EditSiteForm';
 
 interface SiteDetailsProps {
   site: SiteMember | null;
   onEditClick?: (site: SiteMember) => void;
+  onSiteUpdate?: (updatedSite: SiteMember) => void;
 }
 
-const SiteDetails: React.FC<SiteDetailsProps> = ({ site, onEditClick }) => {
+const SiteDetails: React.FC<SiteDetailsProps> = ({ site, onEditClick, onSiteUpdate }) => {
   const [menuItem, setMenuitem] = useState<null | HTMLElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
   const open = Boolean(menuItem);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -35,11 +38,24 @@ const SiteDetails: React.FC<SiteDetailsProps> = ({ site, onEditClick }) => {
   };
 
   const handleMenuAction = (action: string) => {
-   if (action === 'edit' && site && onEditClick) {
-      onEditClick(site);
+    if (action === 'edit' && site) {
+      setIsEditing(true);
+      if (onEditClick) {
+        onEditClick(site);
+      }
     }
-
     handleMenuClose();
+  };
+
+  const handleSaveEdit = (updatedSite: SiteMember) => {
+    if (onSiteUpdate) {
+      onSiteUpdate(updatedSite);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
   };
   if (!site) {
     return (
@@ -54,6 +70,17 @@ const SiteDetails: React.FC<SiteDetailsProps> = ({ site, onEditClick }) => {
           Select a site to view details
         </Typography>
       </Box>
+    );
+  }
+
+  // Show edit form if in editing mode
+  if (isEditing) {
+    return (
+      <EditSiteForm
+        site={site}
+        onSave={handleSaveEdit}
+        onCancel={handleCancelEdit}
+      />
     );
   }
 
@@ -188,7 +215,7 @@ const SiteDetails: React.FC<SiteDetailsProps> = ({ site, onEditClick }) => {
         </MenuItem>
 
         <MenuItem onClick={() => handleMenuAction('change-password')} >
-          <ListItemText primary="Change Password" />
+          <ListItemText primary="Archive site" />
         </MenuItem>
       </Menu>
     </Box>

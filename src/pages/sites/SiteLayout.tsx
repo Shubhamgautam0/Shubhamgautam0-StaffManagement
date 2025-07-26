@@ -14,9 +14,7 @@ const SiteLayout: React.FC = () => {
   const [sites, setSites] = useState<SiteMember[]>(SiteData);
   const [selectedSite, setSelectedSite] = useState<SiteMember | null>(null);
   const [fabHovered, setFabHovered] = useState(false);
-  const [showAddSiteForm, setShowAddSiteForm] = useState(false);
-  const [showSiteInvoice, setShowSiteInvoice] = useState(false);
-  const [showAddMobileCarForm, setShowAddMobileCarForm] = useState(false);
+  const [activeForm, setActiveForm] = useState<string | null>(null);
 
   useEffect(() => {
     if (sites.length > 0 && !selectedSite) {
@@ -39,50 +37,60 @@ const SiteLayout: React.FC = () => {
   };
 
   const handleAddSite = () => {
-    setShowAddSiteForm(true);
+    setActiveForm('addSite');
   };
 
   const handleSaveSite = (siteData: any) => {
     const success = addSite(siteData);
     if (success) {
-      // Refresh sites list
       setSites([...SiteData]);
-      setShowAddSiteForm(false);
-      // Select the newly added site
+      setActiveForm(null);
       const newSite = SiteData[SiteData.length - 1];
       setSelectedSite(newSite);
     }
   };
 
   const handleCancelAddSite = () => {
-    setShowAddSiteForm(false);
+    setActiveForm(null);
   };
 
   const handleSiteInvoice = () => {
-    setShowSiteInvoice(true);
+    setActiveForm('invoice');
   };
 
   const handleCloseSiteInvoice = () => {
-    setShowSiteInvoice(false);
+    setActiveForm(null);
   };
 
   const handleAddMobileCar = () => {
-    setShowAddMobileCarForm(true);
+    setActiveForm('mobileCar');
   };
 
   const handleSaveMobileCar = (mobileCarData: any) => {
     console.log('Mobile car data:', mobileCarData);
-    // Here you would typically save the mobile car data to your backend
-    setShowAddMobileCarForm(false);
+    setActiveForm(null);
   };
 
   const handleCancelAddMobileCar = () => {
-    setShowAddMobileCarForm(false);
+    setActiveForm(null);
+  };
+
+  const handleSiteUpdate = (updatedSite: SiteMember) => {
+    // Update the sites array
+    const updatedSites = sites.map(site =>
+      site.id === updatedSite.id ? updatedSite : site
+    );
+    setSites(updatedSites);
+
+    // Update selected site if it's the one being edited
+    if (selectedSite && selectedSite.id === updatedSite.id) {
+      setSelectedSite(updatedSite);
+    }
   };
 
   return (
     <Box className="page-container sites-page">
-      <Grid container spacing={2} className="grid-container" >
+      <Grid container spacing={2} className="grid-container">
         <Grid size={{ xs: 12, sm: 12, md: 4 }} className="grid-item">
           <Paper className="paper-container">
             <SiteList onSiteSelect={handleSiteSelect} selectedSite={selectedSite} sites={sites} />
@@ -90,15 +98,15 @@ const SiteLayout: React.FC = () => {
         </Grid>
 
         <Grid size={{ xs: 12, md: 8 }} className="grid-item">
-          {showAddSiteForm ? (
+          {activeForm === 'addSite' ? (
             <Paper className="paper-container">
               <AddSiteForm onSave={handleSaveSite} onCancel={handleCancelAddSite} />
             </Paper>
-          ) : showSiteInvoice ? (
+          ) : activeForm === 'invoice' ? (
             <Paper className="paper-container">
               <SiteInvoice onClose={handleCloseSiteInvoice} />
             </Paper>
-          ) : showAddMobileCarForm ? (
+          ) : activeForm === 'mobileCar' ? (
             <Paper className="paper-container">
               <AddMobileCarForm onSave={handleSaveMobileCar} onCancel={handleCancelAddMobileCar} />
             </Paper>
@@ -119,7 +127,10 @@ const SiteLayout: React.FC = () => {
                 overflow: 'hidden'
               }}>
                 <Paper className="paper-container">
-                  <SiteDetails site={selectedSite} />
+                  <SiteDetails
+                    site={selectedSite}
+                    onSiteUpdate={handleSiteUpdate}
+                  />
                 </Paper>
               </Grid>
 
@@ -140,56 +151,84 @@ const SiteLayout: React.FC = () => {
       </Grid>
 
       <Box
-              className="fab-container"
-              onMouseEnter={() => setFabHovered(true)}
-              onMouseLeave={() => setFabHovered(false)}
+        className="fab-container"
+        onMouseEnter={() => setFabHovered(true)}
+        onMouseLeave={() => setFabHovered(false)}
+        sx={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          display: 'flex',
+          flexDirection: 'column-reverse',
+          alignItems: 'center',
+          gap: 2,
+          zIndex: 1300
+        }}
+      >
+        {/* Main FAB - Always visible */}
+        <Fab
+          color="primary"
+          className={`fab-primary ${fabHovered ? 'fab-rotate' : 'fab-rotate-reset'}`}
+          sx={{
+            zIndex: 1302,
+            pointerEvents: 'auto'
+          }}
+          onClick={() => setActiveForm(null)}
+        >
+          <Add />
+        </Fab>
+
+        {/* Add new site */}
+        <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '0ms' : '0ms' }}>
+          <Tooltip title="Add new site" placement="left">
+            <Fab
+              size="medium"
+              onClick={handleAddSite}
+              className="fab-primary"
+              sx={{
+                zIndex: 1301,
+                pointerEvents: 'auto'
+              }}
             >
-              {/* Add Mobile Car */}
-              <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '100ms' : '0ms' }}>
-                <Tooltip title="Mobile car" placement="left">
-                  <Fab
-                    size="large"
-                    onClick={handleAddMobileCar}
-                    className="fab-primary"
-                  >
-                    <CarCrashOutlined />
-                  </Fab>
-                </Tooltip>
-              </Zoom>
-      
-              {/* Timesheet */}
-              <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '50ms' : '0ms' }}>
-                <Tooltip title="Site Invoice" placement="left">
-                  <Fab
-                    size="large"
-                    onClick={handleSiteInvoice}
-                    className="fab-primary"
-                  >
-                    <LocationCity />
-                  </Fab>
-                </Tooltip>
-              </Zoom>
-              {/* Timesheet */}
-              <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '50ms' : '0ms' }}>
-                <Tooltip title="Add new site" placement="left">
-                  <Fab
-                    size="large"
-                    onClick={handleAddSite}
-                    className="fab-primary"
-                  >
-                    <Map />
-                  </Fab>
-                </Tooltip>
-              </Zoom>
-      
-              {/* Main FAB */}
-              <Fab
-                color="primary"
-                className={`fab-primary ${fabHovered ? 'fab-rotate' : 'fab-rotate-reset'}`}
-              >
-                <Add />
-              </Fab>
-            </Box>
+              <Map />
+            </Fab>
+          </Tooltip>
+        </Zoom>
+
+        {/* Add Mobile Car */}
+        <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '100ms' : '0ms' }}>
+          <Tooltip title="Mobile car" placement="left">
+            <Fab
+              size="medium"
+              onClick={handleAddMobileCar}
+              className="fab-primary"
+              sx={{
+                zIndex: 1301,
+                pointerEvents: 'auto'
+              }}
+            >
+              <CarCrashOutlined />
+            </Fab>
+          </Tooltip>
+        </Zoom>
+
+        {/* Site Invoice */}
+        <Zoom in={fabHovered} timeout={200} style={{ transitionDelay: fabHovered ? '50ms' : '0ms' }}>
+          <Tooltip title="Site Invoice" placement="left">
+            <Fab
+              size="medium"
+              onClick={handleSiteInvoice}
+              className="fab-primary"
+              sx={{
+                zIndex: 1301,
+                pointerEvents: 'auto'
+              }}
+            >
+              <LocationCity />
+            </Fab>
+          </Tooltip>
+        </Zoom>
+      </Box>
     </Box>
   );
 };

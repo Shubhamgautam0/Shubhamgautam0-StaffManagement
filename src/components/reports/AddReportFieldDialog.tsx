@@ -259,7 +259,7 @@ const AddReportFieldDialog: React.FC<AddReportFieldDialogProps> = ({
                   minWidth: 'auto',
                   px: 2,
                   borderColor: 'var(--clr-purple-light)',
-                  color: 'var(--clr-purple-light)',
+                  color: 'var(--clr-purple)',
                   '&:hover': {
                     borderColor: '#7c4dff',
                     backgroundColor: 'rgba(124, 77, 255, 0.04)',
@@ -312,7 +312,7 @@ const AddReportFieldDialog: React.FC<AddReportFieldDialogProps> = ({
               ((fieldData.type === 'Dropdown' || fieldData.type === 'Radio' || fieldData.type === 'Checkbox') && dropdownOptions.length === 0)
             }
             sx={{
-              backgroundColor: 'var(--clr-purple-light)',
+              backgroundColor: 'var(--clr-purple)',
               color: 'white',
               px: 4,
               py: 1.5,
